@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY gateway/ ./gateway/
+COPY frontend/ ./frontend/
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data
