@@ -3,13 +3,15 @@ Enterprise AI Gateway & Data Privacy Firewall
 FastAPI proxy server — full pipeline implementation.
 """
 
+import pathlib
 import time
 import random
 import hashlib
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .inspector import PIIInspector
 from .injection import InjectionDetector
@@ -48,6 +50,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+_FRONTEND = pathlib.Path(__file__).parent.parent / "frontend"
+if _FRONTEND.exists():
+    app.mount("/static", StaticFiles(directory=str(_FRONTEND)), name="static")
+
+@app.get("/", include_in_schema=False)
+async def index():
+    return FileResponse(str(_FRONTEND / "index.html"))
 
 # Singleton service instances
 _inspector = PIIInspector()
