@@ -7,11 +7,17 @@ import pathlib
 import time
 import random
 import hashlib
-from typing import List, Optional
+import re
+import sqlite3
+import threading
+import json
+from datetime import datetime, timezone
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 from .inspector import PIIInspector
 from .injection import InjectionDetector
@@ -31,6 +37,166 @@ from .models import (
     AuditEntry,
     ThreatSummary,
 )
+
+
+# ---------------------------------------------------------------------------
+# PII Detection engine for /api/detect
+# ---------------------------------------------------------------------------
+
+_DETECT_PATTERNS = [
+    ("SSN",         re.compile(r"\b\d{3}-\d{2}-\d{4}\b")),
+    ("CREDIT_CARD", re.compile(r"\b\d{4}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b")),
+    ("EMAIL",       re.compile(r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b")),
+    ("PHONE",       re.compile(r"\b(\+1\s?)?\(?\d{3}\)?[\s.\-]\d{3}[\s.\-]\d{4}\b")),
+    ("IP_ADDRESS",  re.compile(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b")),
+    ("DATE_OF_BIRTH", re.compile(
+        r"\b\d{1,2}/\d{1,2}/\d{4}\b"
+        r"|\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{4}\b",
+        re.IGNORECASE,
+    )),
+    ("MEDICAL",     re.compile(
+        r"\b(diagnosed|prescription|patient|HIV|diabetes|hypertension|cancer|medication|dosage|treatment|symptoms|disorder|syndrome|therapy|clinical)\b",
+        re.IGNORECASE,
+    )),
+    ("ADDRESS",     re.compile(
+        r"\b\d+\s+[A-Z][a-z]+\s+(St|Ave|Blvd|Dr|Rd|Lane|Way|Court|Ct|Place|Pl)\b",
+        re.IGNORECASE,
+    )),
+    ("NAME",        re.compile(r"\b[A-Z][a-z]{1,20}\s+[A-Z][a-z]{1,20}\b")),
+]
+
+_RISK_WEIGHTS = {
+    "SSN": 30,
+    "CREDIT_CARD": 25,
+    "MEDICAL": 20,
+    "DATE_OF_BIRTH": 15,
+    "ADDRESS": 12,
+    "NAME": 10,
+    "PHONE": 8,
+    "EMAIL": 8,
+    "IP_ADDRESS": 5,
+}
+
+_RISK_LEVELS = {
+    "SSN": "critical",
+    "CREDIT_CARD": "critical",
+    "MEDICAL": "high",
+    "DATE_OF_BIRTH": "high",
+    "ADDRESS": "medium",
+    "NAME": "medium",
+    "PHONE": "medium",
+    "EMAIL": "low",
+    "IP_ADDRESS": "low",
+}
+
+_SENSITIVITY_FILTERS = {
+    "low":    {"SSN", "CREDIT_CARD", "EMAIL", "PHONE"},
+    "medium": {"SSN", "CREDIT_CARD", "EMAIL", "PHONE", "IP_ADDRESS", "DATE_OF_BIRTH", "ADDRESS"},
+    "high":   {"SSN", "CREDIT_CARD", "EMAIL", "PHONE", "IP_ADDRESS", "DATE_OF_BIRTH", "ADDRESS", "MEDICAL", "NAME"},
+}
+
+
+# ---------------------------------------------------------------------------
+# Pydantic models for new endpoints
+# ---------------------------------------------------------------------------
+
+class DetectRequest(BaseModel):
+    text: str
+    sensitivity: str = "medium"  # low | medium | high
+
+
+class DetectionResult(BaseModel):
+    type: str
+    value: str
+    start: int
+    end: int
+    risk_level: str
+
+
+class DetectResponse(BaseModel):
+    detections: List[DetectionResult]
+    redacted_text: str
+    threat_score: int
+    pii_types_found: List[str]
+
+
+# ---------------------------------------------------------------------------
+# PII Detect SQLite audit log
+# ---------------------------------------------------------------------------
+
+_DETECT_DB_PATH = "pii_detect_audit.db"
+_detect_db_lock = threading.Lock()
+
+
+def _init_detect_db():
+    with sqlite3.connect(_DETECT_DB_PATH) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS detect_log (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp       TEXT NOT NULL,
+                text_length     INTEGER NOT NULL,
+                pii_types_found TEXT NOT NULL,
+                threat_score    INTEGER NOT NULL
+            )
+        """)
+        conn.commit()
+
+
+_init_detect_db()
+
+
+def _save_detect_log(text_length: int, pii_types: List[str], threat_score: int):
+    ts = datetime.now(timezone.utc).isoformat()
+    with _detect_db_lock:
+        with sqlite3.connect(_DETECT_DB_PATH) as conn:
+            conn.execute(
+                "INSERT INTO detect_log (timestamp, text_length, pii_types_found, threat_score) VALUES (?, ?, ?, ?)",
+                (ts, text_length, json.dumps(pii_types), threat_score),
+            )
+            conn.commit()
+
+
+def _get_detect_logs(limit: int = 50) -> List[Dict[str, Any]]:
+    with _detect_db_lock:
+        with sqlite3.connect(_DETECT_DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT * FROM detect_log ORDER BY id DESC LIMIT ?", (limit,)
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def _get_detect_stats() -> Dict[str, Any]:
+    with _detect_db_lock:
+        with sqlite3.connect(_DETECT_DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                "SELECT COUNT(*) as total, AVG(threat_score) as avg_score FROM detect_log"
+            ).fetchone()
+            types_rows = conn.execute(
+                "SELECT pii_types_found FROM detect_log"
+            ).fetchall()
+
+    total = row["total"] or 0
+    avg_score = round(row["avg_score"] or 0, 1)
+
+    # Count PII types across all scans
+    type_counts: Dict[str, int] = {}
+    for r in types_rows:
+        try:
+            types = json.loads(r["pii_types_found"])
+            for t in types:
+                type_counts[t] = type_counts.get(t, 0) + 1
+        except Exception:
+            pass
+
+    most_common = max(type_counts, key=type_counts.get) if type_counts else None
+
+    return {
+        "total_scans": total,
+        "most_common_pii": most_common,
+        "avg_threat_score": avg_score,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -368,3 +534,77 @@ async def get_key_stats(api_key: str):
 async def list_demo_keys():
     """List pre-configured demo API keys and their roles."""
     return [{"api_key": k, "role": v} for k, v in DEMO_KEYS.items()]
+
+
+# ---------------------------------------------------------------------------
+# New PII Detection endpoints
+# ---------------------------------------------------------------------------
+
+@app.post("/api/detect", response_model=DetectResponse)
+async def detect_pii(req: DetectRequest):
+    """
+    Detect PII in text using regex patterns.
+    Returns detections with positions, risk levels, redacted text, and threat score.
+    """
+    text = req.text
+    sensitivity = req.sensitivity if req.sensitivity in _SENSITIVITY_FILTERS else "medium"
+    allowed_types = _SENSITIVITY_FILTERS[sensitivity]
+
+    raw_matches: List[tuple] = []  # (start, end, type, value)
+
+    for pii_type, pattern in _DETECT_PATTERNS:
+        if pii_type not in allowed_types:
+            continue
+        for m in pattern.finditer(text):
+            raw_matches.append((m.start(), m.end(), pii_type, m.group(0)))
+
+    # Sort by start position, then remove overlaps
+    raw_matches.sort(key=lambda x: x[0])
+    detections: List[DetectionResult] = []
+    covered_until = -1
+
+    for start, end, pii_type, value in raw_matches:
+        if start < covered_until:
+            continue
+        detections.append(DetectionResult(
+            type=pii_type,
+            value=value,
+            start=start,
+            end=end,
+            risk_level=_RISK_LEVELS.get(pii_type, "low"),
+        ))
+        covered_until = end
+
+    # Build redacted text (right to left to preserve positions)
+    redacted = text
+    for det in reversed(detections):
+        redacted = redacted[:det.start] + f"[{det.type}_REDACTED]" + redacted[det.end:]
+
+    # Compute threat score
+    score = 0
+    pii_types_found = list({d.type for d in detections})
+    for t in pii_types_found:
+        score += _RISK_WEIGHTS.get(t, 5)
+    threat_score = min(100, score)
+
+    # Persist to audit log
+    _save_detect_log(len(text), pii_types_found, threat_score)
+
+    return DetectResponse(
+        detections=detections,
+        redacted_text=redacted,
+        threat_score=threat_score,
+        pii_types_found=pii_types_found,
+    )
+
+
+@app.get("/api/audit-log")
+async def get_detect_audit_log():
+    """Return last 50 entries from the PII detect audit log."""
+    return _get_detect_logs(limit=50)
+
+
+@app.get("/api/stats")
+async def get_detect_stats():
+    """Return aggregate stats: total scans, most common PII, avg threat score."""
+    return _get_detect_stats()
