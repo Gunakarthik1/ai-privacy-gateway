@@ -6,7 +6,7 @@
   <title>AI Privacy Gateway</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -29,9 +29,13 @@
       --blue:        #3b82f6;
       --purple:      #a855f7;
       --mono:        'JetBrains Mono', ui-monospace, monospace;
-      --sans:        'Inter', system-ui, sans-serif;
-      --radius:      12px;
-      --radius-sm:   8px;
+      --sans:        'Nunito', system-ui, sans-serif;
+      --radius:      1.5rem;
+      --radius-sm:   1rem;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     html, body {
@@ -41,11 +45,24 @@
       font-family: var(--sans);
       font-size: 14px;
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+    /* ── Reveal scroll animations ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* ── Header ─────────────────────────────────────────────────────── */
     .header {
@@ -84,7 +101,7 @@
 
     .header-title {
       font-size: 18px;
-      font-weight: 700;
+      font-weight: 800;
       background: linear-gradient(90deg, #e2e8f0, #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -101,9 +118,9 @@
       background: rgba(34,197,94,0.1);
       border: 1px solid rgba(34,197,94,0.25);
       padding: 6px 14px;
-      border-radius: 20px;
+      border-radius: 50rem;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--green);
     }
 
@@ -152,7 +169,7 @@
 
     .card-head-title {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
       letter-spacing: 0.01em;
     }
@@ -185,22 +202,24 @@
       padding: 10px 14px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.10);
-      border-radius: var(--radius-sm);
+      border-radius: 50rem;
       color: var(--text-muted);
       font-family: var(--sans);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.18s;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
     }
 
     .preset-btn:hover {
       background: rgba(124,58,237,0.15);
       border-color: rgba(124,58,237,0.4);
       color: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
     .preset-btn .preset-emoji { font-size: 15px; }
@@ -235,7 +254,7 @@
 
     .sensitivity-label {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text-muted);
       white-space: nowrap;
     }
@@ -247,13 +266,13 @@
 
     .sensitivity-pill {
       padding: 5px 14px;
-      border-radius: 20px;
+      border-radius: 50rem;
       border: 1px solid rgba(255,255,255,0.12);
       background: transparent;
       color: var(--text-muted);
       font-family: var(--sans);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -272,20 +291,23 @@
       color: #fff;
       font-family: var(--sans);
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: 50rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
       letter-spacing: 0.02em;
       box-shadow: 0 4px 20px rgba(124,58,237,0.3);
     }
 
-    .analyze-btn:hover { box-shadow: 0 6px 28px rgba(124,58,237,0.5); transform: translateY(-1px); }
+    .analyze-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
     .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* ── Output panel ─────────────────────────────────────────────────── */
@@ -312,7 +334,7 @@
     .pii-chip {
       display: inline-block;
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: 50rem;
       font-weight: 700;
       font-family: var(--mono);
       font-size: 11px;
@@ -375,7 +397,7 @@
 
     .gauge-score-num {
       font-size: 38px;
-      font-weight: 800;
+      font-weight: 900;
       line-height: 1;
       letter-spacing: -0.04em;
       color: var(--text);
@@ -384,7 +406,7 @@
 
     .gauge-label {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -427,7 +449,7 @@
       padding: 10px 14px;
       text-align: left;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -448,9 +470,9 @@
     .det-type-badge {
       display: inline-block;
       padding: 3px 9px;
-      border-radius: 20px;
+      border-radius: 50rem;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
@@ -460,9 +482,9 @@
       align-items: center;
       gap: 5px;
       padding: 3px 9px;
-      border-radius: 20px;
+      border-radius: 50rem;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -508,7 +530,7 @@
 
     .stat-label {
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -516,7 +538,7 @@
 
     .stat-value {
       font-size: 22px;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--text);
       letter-spacing: -0.03em;
       line-height: 1.1;
@@ -537,7 +559,7 @@
       padding: 10px 14px;
       text-align: left;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--text-dim);
@@ -569,9 +591,9 @@
 
     .pii-tag {
       font-size: 9px;
-      font-weight: 700;
+      font-weight: 800;
       padding: 2px 7px;
-      border-radius: 10px;
+      border-radius: 50rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -601,6 +623,12 @@
     }
 
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+    /* ── Wave divider ───────────────────────────────────────────────── */
+    .wave-divider {
+      line-height: 0;
+      overflow: hidden;
+    }
 
     /* ── Responsive ─────────────────────────────────────────────────── */
     @media (max-width: 900px) {
@@ -639,7 +667,7 @@
   <div class="analysis-row">
 
     <!-- LEFT: Input Panel -->
-    <div class="card">
+    <div class="card reveal" style="transition-delay:0ms;">
       <div class="card-head">
         <div class="card-head-icon icon-purple">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -686,7 +714,7 @@
     </div>
 
     <!-- RIGHT: Output Panel -->
-    <div class="card">
+    <div class="card reveal" style="transition-delay:100ms;">
       <div class="card-head">
         <div class="card-head-icon icon-blue">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
@@ -702,11 +730,18 @@
     </div>
   </div>
 
+  <!-- Wave divider between analysis row and score row -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:60px;">
+      <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.02)"/>
+    </svg>
+  </div>
+
   <!-- ── Threat Score + Detection Table + Stats ───────────────────── -->
   <div class="score-row">
 
     <!-- Gauge -->
-    <div class="card gauge-card">
+    <div class="card gauge-card reveal" style="transition-delay:0ms;">
       <div class="gauge-wrap">
         <svg class="gauge-svg" viewBox="0 0 180 100">
           <!-- Background arc (semicircle) -->
@@ -744,7 +779,7 @@
     </div>
 
     <!-- Detection Results Table -->
-    <div class="card det-table-card">
+    <div class="card det-table-card reveal" style="transition-delay:100ms;">
       <div class="card-head">
         <div class="card-head-icon icon-purple">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -757,7 +792,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="card">
+    <div class="card reveal" style="transition-delay:200ms;">
       <div class="card-head">
         <div class="card-head-icon icon-green">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -785,8 +820,15 @@
 
   </div>
 
+  <!-- Wave divider between score row and audit log -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:60px;">
+      <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.015)"/>
+    </svg>
+  </div>
+
   <!-- ── Audit Log ─────────────────────────────────────────────────── -->
-  <div class="card">
+  <div class="card reveal" style="transition-delay:0ms;">
     <div class="card-head">
       <div class="card-head-icon icon-purple">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -802,6 +844,14 @@
 </div><!-- /.main-wrap -->
 
 <script>
+/* ════════════════════════════════════════════════════════════════════════
+   Scroll reveal
+   ════════════════════════════════════════════════════════════════════════ */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) e.target.classList.add('visible');
+}), { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
 /* ════════════════════════════════════════════════════════════════════════
    State
    ════════════════════════════════════════════════════════════════════════ */
