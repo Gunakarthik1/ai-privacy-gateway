@@ -11,36 +11,43 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #0a0a0f;
-      --bg2:         #0f0f18;
-      --card:        rgba(255,255,255,0.04);
-      --card-border: 1px solid rgba(255,255,255,0.10);
-      --card-hover:  rgba(255,255,255,0.06);
-      --accent:      #7c3aed;
-      --accent2:     #9f67ff;
-      --accent-glow: rgba(124,58,237,0.35);
-      --text:        #e2e8f0;
-      --text-muted:  #94a3b8;
-      --text-dim:    #475569;
-      --green:       #22c55e;
-      --yellow:      #eab308;
-      --orange:      #f97316;
-      --red:         #ef4444;
-      --blue:        #3b82f6;
-      --purple:      #a855f7;
+      --bg:          #242020;
+      --bg2:         #1c1919;
+      --card:        #1e1b1b;
+      --card-border: 1px solid rgba(255,255,255,0.07);
+      --accent:      #f09060;
+      --accent2:     #fbb485;
+      --accent-glow: rgba(240,144,96,0.35);
+      --text:        #f0ece8;
+      --text-muted:  #a09890;
+      --text-dim:    #6b6360;
+      --green:       #5ecb8a;
+      --yellow:      #f5c842;
+      --orange:      #f58b42;
+      --red:         #f05060;
+      --blue:        #6a9ff5;
+      --purple:      #a87be8;
+      --stripe1:     #7b5ea7;
+      --stripe2:     #c85878;
+      --stripe3:     #e8836a;
+      --stripe4:     #d4a64a;
+      --stripe5:     #c8b84a;
       --mono:        'JetBrains Mono', ui-monospace, monospace;
       --sans:        'Nunito', system-ui, sans-serif;
       --radius:      1.5rem;
       --radius-sm:   1rem;
+      --ease:        cubic-bezier(0.16,1,0.3,1);
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     html, body {
       min-height: 100vh;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 30px 30px;
       color: var(--text);
       font-family: var(--sans);
       font-size: 14px;
@@ -53,21 +60,18 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
-    /* ── Reveal scroll animations ───────────────────────────────────────── */
+    /* ── Reveal animations ─────────────────────────────────────────────── */
     .reveal {
       opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── Header ─────────────────────────────────────────────────────── */
+    /* ── Header ─────────────────────────────────────────────────────────── */
     .header {
-      background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(15,15,24,0.95) 60%);
-      border-bottom: 1px solid rgba(124,58,237,0.25);
+      background: var(--bg2);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       padding: 0 32px;
       height: 64px;
       display: flex;
@@ -79,569 +83,345 @@
       backdrop-filter: blur(12px);
     }
 
-    .header-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .header-logo { display: flex; align-items: center; gap: 12px; }
 
     .shield-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #7c3aed, #9f67ff);
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--stripe1), var(--stripe2));
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px var(--accent-glow);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(123,94,167,0.4);
       flex-shrink: 0;
     }
-
     .shield-icon svg { color: #fff; }
 
     .header-title {
       font-size: 18px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #e2e8f0, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-weight: 900;
+      color: var(--text);
       letter-spacing: -0.02em;
     }
 
     .header-spacer { flex: 1; }
 
     .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(34,197,94,0.1);
-      border: 1px solid rgba(34,197,94,0.25);
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(94,203,138,0.1);
+      border: 1px solid rgba(94,203,138,0.25);
       padding: 6px 14px;
       border-radius: 50rem;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 12px; font-weight: 700;
       color: var(--green);
     }
-
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--green);
       animation: pulse 2.2s ease-in-out infinite;
     }
-
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── Main layout ─────────────────────────────────────────────────── */
+    /* ── Rainbow stripe decoration ──────────────────────────────────────── */
+    .rainbow-stripe {
+      position: relative;
+      height: 120px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .rainbow-stripe svg {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: auto;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 48px 32px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 540px;
+      font-weight: 500;
+    }
+
+    /* ── Main layout ─────────────────────────────────────────────────────── */
     .main-wrap {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 28px 24px;
+      padding: 0 24px 48px;
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
 
-    /* ── Two-column analysis row ─────────────────────────────────────── */
-    .analysis-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    .analysis-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-    /* ── Cards ──────────────────────────────────────────────────────── */
+    /* ── Cards ───────────────────────────────────────────────────────────── */
     .card {
       background: var(--card);
       border: var(--card-border);
       border-radius: var(--radius);
       overflow: hidden;
+      position: relative;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    /* colorful top bar on every card */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--stripe1), var(--stripe2), var(--stripe3), var(--stripe4), var(--stripe5));
     }
 
     .card-head {
       padding: 14px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; gap: 10px;
     }
-
     .card-head-title {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 14px; font-weight: 800;
       color: var(--text);
       letter-spacing: 0.01em;
     }
-
     .card-head-icon {
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-
-    .icon-purple { background: rgba(124,58,237,0.2); color: var(--accent2); }
-    .icon-blue   { background: rgba(59,130,246,0.15); color: var(--blue); }
-    .icon-green  { background: rgba(34,197,94,0.12); color: var(--green); }
+    .icon-purple { background: rgba(168,123,232,0.18); color: var(--purple); }
+    .icon-blue   { background: rgba(106,159,245,0.15); color: var(--blue); }
+    .icon-green  { background: rgba(94,203,138,0.12);  color: var(--green); }
 
     .card-body { padding: 18px; }
 
-    /* ── Presets ─────────────────────────────────────────────────────── */
-    .presets-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+    /* ── Presets ─────────────────────────────────────────────────────────── */
+    .presets-row { display: flex; gap: 10px; margin-bottom: 14px; }
 
     .preset-btn {
       flex: 1;
       padding: 10px 14px;
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.09);
       border-radius: 50rem;
       color: var(--text-muted);
       font-family: var(--sans);
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 12px; font-weight: 700;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.3s var(--ease);
     }
-
     .preset-btn:hover {
-      background: rgba(124,58,237,0.15);
-      border-color: rgba(124,58,237,0.4);
+      background: rgba(240,144,96,0.12);
+      border-color: rgba(240,144,96,0.4);
       color: var(--accent2);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     }
-
     .preset-btn .preset-emoji { font-size: 15px; }
 
-    /* ── Textarea ─────────────────────────────────────────────────────── */
+    /* ── Textarea ────────────────────────────────────────────────────────── */
     .input-textarea {
-      width: 100%;
-      min-height: 200px;
-      resize: vertical;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      font-family: var(--sans);
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.65;
-      transition: border-color 0.15s;
-      margin-bottom: 12px;
-    }
-
-    .input-textarea:focus { outline: none; border-color: var(--accent); }
-    .input-textarea::placeholder { color: var(--text-dim); }
-
-    /* ── Sensitivity selector ─────────────────────────────────────────── */
-    .sensitivity-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .sensitivity-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .sensitivity-pills {
-      display: flex;
-      gap: 6px;
-    }
-
-    .sensitivity-pill {
-      padding: 5px 14px;
-      border-radius: 50rem;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--sans);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .sensitivity-pill:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
-
-    .sensitivity-pill.active-low    { background: rgba(34,197,94,0.15);  border-color: rgba(34,197,94,0.4);  color: var(--green); }
-    .sensitivity-pill.active-medium { background: rgba(234,179,8,0.15);  border-color: rgba(234,179,8,0.4);  color: var(--yellow); }
-    .sensitivity-pill.active-high   { background: rgba(239,68,68,0.15);  border-color: rgba(239,68,68,0.4);  color: var(--red); }
-
-    /* ── Analyze button ─────────────────────────────────────────────── */
-    .analyze-btn {
-      width: 100%;
-      padding: 13px 20px;
-      background: linear-gradient(135deg, #7c3aed, #9f67ff);
-      color: #fff;
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 800;
-      border: none;
-      border-radius: 50rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-      letter-spacing: 0.02em;
-      box-shadow: 0 4px 20px rgba(124,58,237,0.3);
-    }
-
-    .analyze-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* ── Output panel ─────────────────────────────────────────────────── */
-    .redacted-display {
-      min-height: 200px;
-      background: rgba(0,0,0,0.3);
+      width: 100%; min-height: 200px; resize: vertical;
+      background: rgba(0,0,0,0.25);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: var(--radius-sm);
       padding: 14px 16px;
-      font-size: 14px;
-      line-height: 1.75;
-      color: var(--text);
-      white-space: pre-wrap;
-      word-break: break-word;
       font-family: var(--sans);
-    }
-
-    .redacted-placeholder {
-      color: var(--text-dim);
-      font-style: italic;
-    }
-
-    /* PII highlight chips in redacted text */
-    .pii-chip {
-      display: inline-block;
-      padding: 1px 6px;
-      border-radius: 50rem;
-      font-weight: 700;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.03em;
-    }
-
-    .chip-ssn         { background: rgba(239,68,68,0.25);   color: #fca5a5; border: 1px solid rgba(239,68,68,0.4); }
-    .chip-credit_card { background: rgba(249,115,22,0.22);  color: #fdba74; border: 1px solid rgba(249,115,22,0.4); }
-    .chip-email       { background: rgba(59,130,246,0.22);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.4); }
-    .chip-phone       { background: rgba(34,197,94,0.18);   color: #86efac; border: 1px solid rgba(34,197,94,0.35); }
-    .chip-medical     { background: rgba(168,85,247,0.22);  color: #d8b4fe; border: 1px solid rgba(168,85,247,0.4); }
-    .chip-ip_address  { background: rgba(234,179,8,0.18);   color: #fde68a; border: 1px solid rgba(234,179,8,0.35); }
-    .chip-name        { background: rgba(20,184,166,0.18);  color: #99f6e4; border: 1px solid rgba(20,184,166,0.35); }
-    .chip-date_of_birth { background: rgba(244,63,94,0.18); color: #fda4af; border: 1px solid rgba(244,63,94,0.35); }
-    .chip-address     { background: rgba(132,204,22,0.16);  color: #bef264; border: 1px solid rgba(132,204,22,0.3); }
-
-    /* ── Threat Score Arc ─────────────────────────────────────────────── */
-    .score-row {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr 1fr;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    .gauge-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 18px 18px;
-    }
-
-    .gauge-wrap {
-      position: relative;
-      width: 180px;
-      height: 100px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+      transition: border-color 0.15s;
       margin-bottom: 12px;
     }
+    .input-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(240,144,96,0.12); }
+    .input-textarea::placeholder { color: var(--text-dim); }
 
+    /* ── Sensitivity ─────────────────────────────────────────────────────── */
+    .sensitivity-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .sensitivity-label { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+    .sensitivity-pills { display: flex; gap: 6px; }
+    .sensitivity-pill {
+      padding: 5px 14px; border-radius: 50rem;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: transparent; color: var(--text-muted);
+      font-family: var(--sans); font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .sensitivity-pill:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
+    .sensitivity-pill.active-low    { background: rgba(94,203,138,0.15);  border-color: rgba(94,203,138,0.4);   color: var(--green); }
+    .sensitivity-pill.active-medium { background: rgba(245,200,66,0.15);  border-color: rgba(245,200,66,0.4);   color: var(--yellow); }
+    .sensitivity-pill.active-high   { background: rgba(240,80,96,0.15);   border-color: rgba(240,80,96,0.4);    color: var(--red); }
+
+    /* ── Analyze button ──────────────────────────────────────────────────── */
+    .analyze-btn {
+      width: 100%; padding: 14px 20px;
+      background: linear-gradient(135deg, #f09060, #fbb485);
+      color: #1a0e08;
+      font-family: var(--sans); font-size: 15px; font-weight: 900;
+      border: none; border-radius: 50rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.3s var(--ease);
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 20px rgba(240,144,96,0.35);
+    }
+    .analyze-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(240,144,96,0.45);
+    }
+    .analyze-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ── Output panel ────────────────────────────────────────────────────── */
+    .redacted-display {
+      min-height: 200px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 14px; line-height: 1.75;
+      color: var(--text);
+      white-space: pre-wrap; word-break: break-word;
+      font-family: var(--sans);
+    }
+    .redacted-placeholder { color: var(--text-dim); font-style: italic; }
+
+    /* PII highlight chips */
+    .pii-chip {
+      display: inline-block; padding: 1px 6px;
+      border-radius: 50rem; font-weight: 800;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+    }
+    .chip-ssn         { background: rgba(240,80,96,0.25);   color: #f8a0a8; border: 1px solid rgba(240,80,96,0.4); }
+    .chip-credit_card { background: rgba(245,139,66,0.22);  color: #fdc47a; border: 1px solid rgba(245,139,66,0.4); }
+    .chip-email       { background: rgba(106,159,245,0.22); color: #93c5fd; border: 1px solid rgba(106,159,245,0.4); }
+    .chip-phone       { background: rgba(94,203,138,0.18);  color: #86efac; border: 1px solid rgba(94,203,138,0.35); }
+    .chip-medical     { background: rgba(168,123,232,0.22); color: #d8b4fe; border: 1px solid rgba(168,123,232,0.4); }
+    .chip-ip_address  { background: rgba(245,200,66,0.18);  color: #fde68a; border: 1px solid rgba(245,200,66,0.35); }
+    .chip-name        { background: rgba(20,184,166,0.18);  color: #99f6e4; border: 1px solid rgba(20,184,166,0.35); }
+    .chip-date_of_birth { background: rgba(244,63,94,0.18); color: #fda4af; border: 1px solid rgba(244,63,94,0.35); }
+    .chip-address     { background: rgba(196,180,66,0.16);  color: #e8d87a; border: 1px solid rgba(196,180,66,0.3); }
+
+    /* ── Score row ───────────────────────────────────────────────────────── */
+    .score-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 20px; align-items: stretch; }
+
+    .gauge-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 18px 18px; }
+
+    .gauge-wrap { position: relative; width: 180px; height: 100px; margin-bottom: 12px; }
     .gauge-svg { width: 180px; height: 100px; overflow: visible; }
 
-    .gauge-bg-track { stroke: rgba(255,255,255,0.07); }
-
-    #gauge-arc {
-      stroke: var(--green);
-      stroke-dasharray: 251.2;
-      stroke-dashoffset: 251.2;
-      transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s;
-    }
+    #gauge-arc { stroke: var(--green); stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s; }
 
     .gauge-center-text {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
       padding-bottom: 6px;
     }
+    .gauge-score-num { font-size: 38px; font-weight: 900; line-height: 1; letter-spacing: -0.04em; color: var(--text); transition: color 0.4s; }
+    .gauge-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
 
-    .gauge-score-num {
-      font-size: 38px;
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      transition: color 0.4s;
-    }
+    .gauge-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; justify-content: center; }
+    .gauge-legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
-    .gauge-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .gauge-legend {
-      display: flex;
-      gap: 14px;
-      font-size: 11px;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .gauge-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .legend-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    /* ── Detection table ─────────────────────────────────────────────── */
-    .det-table-card {
-      overflow: hidden;
-    }
-
-    .det-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
+    /* ── Detection table ─────────────────────────────────────────────────── */
+    .det-table-card { overflow: hidden; }
+    .det-table { width: 100%; border-collapse: collapse; }
     .det-table th {
-      padding: 10px 14px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
+      padding: 10px 14px; text-align: left;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
       color: var(--text-dim);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       background: rgba(0,0,0,0.15);
     }
-
-    .det-table td {
-      padding: 11px 14px;
-      font-size: 12.5px;
-      color: var(--text-muted);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
+    .det-table td { padding: 11px 14px; font-size: 12.5px; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
     .det-table tr:last-child td { border-bottom: none; }
     .det-table tr:hover td { background: rgba(255,255,255,0.025); }
 
-    .det-type-badge {
-      display: inline-block;
-      padding: 3px 9px;
-      border-radius: 50rem;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
+    .det-type-badge { display: inline-block; padding: 3px 9px; border-radius: 50rem; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+    .risk-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 50rem; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    .risk-critical { background: rgba(240,80,96,0.18);  color: #f8a0a8; border: 1px solid rgba(240,80,96,0.35); }
+    .risk-high     { background: rgba(245,139,66,0.18); color: #fdc47a; border: 1px solid rgba(245,139,66,0.35); }
+    .risk-medium   { background: rgba(245,200,66,0.15); color: #fde68a; border: 1px solid rgba(245,200,66,0.30); }
+    .risk-low      { background: rgba(94,203,138,0.12); color: #86efac; border: 1px solid rgba(94,203,138,0.25); }
+    .masked-value { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em; }
+    .empty-table { padding: 32px; text-align: center; color: var(--text-dim); font-size: 13px; font-style: italic; }
 
-    .risk-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
-      border-radius: 50rem;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .risk-critical { background: rgba(239,68,68,0.18);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
-    .risk-high     { background: rgba(249,115,22,0.18); color: #fdba74; border: 1px solid rgba(249,115,22,0.35); }
-    .risk-medium   { background: rgba(234,179,8,0.15);  color: #fde68a; border: 1px solid rgba(234,179,8,0.30); }
-    .risk-low      { background: rgba(34,197,94,0.12);  color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
-
-    .masked-value {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.03em;
-    }
-
-    .empty-table {
-      padding: 32px;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 13px;
-      font-style: italic;
-    }
-
-    /* ── Stats bar ──────────────────────────────────────────────────── */
-    .stats-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      justify-content: center;
-      padding: 18px;
-    }
-
+    /* ── Stats bar ───────────────────────────────────────────────────────── */
+    .stats-grid { display: flex; flex-direction: column; gap: 14px; justify-content: center; padding: 18px; }
     .stat-item {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+      display: flex; flex-direction: column; gap: 3px;
       padding: 12px 14px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.18);
       border-radius: var(--radius-sm);
       border: 1px solid rgba(255,255,255,0.06);
     }
+    .stat-label { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+    .stat-value { font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
+    .stat-sub { font-size: 11px; color: var(--text-muted); }
 
-    .stat-label {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--text);
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-
-    .stat-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* ── Audit Log ──────────────────────────────────────────────────── */
-    .audit-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .audit-table th {
-      padding: 10px 14px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      background: rgba(0,0,0,0.15);
-    }
-
-    .audit-table td {
-      padding: 11px 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
+    /* ── Audit Log ───────────────────────────────────────────────────────── */
+    .audit-table { width: 100%; border-collapse: collapse; }
+    .audit-table th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.15); }
+    .audit-table td { padding: 11px 14px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
     .audit-table tr:last-child td { border-bottom: none; }
     .audit-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .audit-ts { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+    .pii-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .pii-tag { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 50rem; letter-spacing: 0.04em; text-transform: uppercase; }
+    .audit-refresh-info { margin-left: auto; font-size: 11px; color: var(--text-dim); }
 
-    .audit-ts {
-      font-family: var(--mono);
-      font-size: 11px;
+    /* ── Section heading ─────────────────────────────────────────────────── */
+    .section-label {
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
       color: var(--text-dim);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
     }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
 
-    .pii-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .pii-tag {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 50rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .audit-refresh-info {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    /* ── Spinner ────────────────────────────────────────────────────── */
-    .spinner {
-      display: inline-block;
-      width: 15px;
-      height: 15px;
-      border: 2px solid rgba(255,255,255,0.25);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
+    /* ── Spinner ─────────────────────────────────────────────────────────── */
+    .spinner { display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(26,14,8,0.25); border-top-color: #1a0e08; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Fade-in ────────────────────────────────────────────────────── */
-    .fade-in {
-      animation: fadeIn 0.35s ease;
-    }
-
+    .fade-in { animation: fadeIn 0.35s ease; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
-    /* ── Wave divider ───────────────────────────────────────────────── */
-    .wave-divider {
-      line-height: 0;
-      overflow: hidden;
-    }
-
-    /* ── Responsive ─────────────────────────────────────────────────── */
+    /* ── Responsive ──────────────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .analysis-row { grid-template-columns: 1fr; }
       .score-row { grid-template-columns: 1fr; }
+      .hero { padding: 32px 20px 16px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- HEADER                                                                -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
 <header class="header">
   <div class="header-logo">
     <div class="shield-icon">
@@ -658,15 +438,32 @@
   </div>
 </header>
 
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- MAIN                                                                   -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- ══ RAINBOW STRIPE DECORATION ══════════════════════════════════════════ -->
+<div class="rainbow-stripe" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M-100,80 C200,20 400,110 700,60 C1000,10 1200,90 1540,50" fill="none" stroke="#7b5ea7" stroke-width="18" stroke-linecap="round" opacity="0.55"/>
+    <path d="M-100,90 C200,30 400,120 700,70 C1000,20 1200,100 1540,60" fill="none" stroke="#c85878" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
+    <path d="M-100,100 C200,40 400,130 700,80 C1000,30 1200,110 1540,70" fill="none" stroke="#e8836a" stroke-width="14" stroke-linecap="round" opacity="0.45"/>
+    <path d="M-100,110 C200,50 400,140 700,90 C1000,40 1200,120 1540,80" fill="none" stroke="#d4a64a" stroke-width="12" stroke-linecap="round" opacity="0.4"/>
+    <path d="M-100,120 C200,60 400,150 700,100 C1000,50 1200,130 1540,90" fill="none" stroke="#c8b84a" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+  </svg>
+</div>
+
+<!-- ══ HERO ════════════════════════════════════════════════════════════════ -->
+<div class="hero reveal">
+  <div class="hero-eyebrow">7-Stage AI Proxy</div>
+  <h1 class="hero-title">Detect & mask PII<br>before it hits your LLM.</h1>
+  <p class="hero-sub">Rate limiting, budget enforcement, prompt injection detection, SSN/email/phone/card masking with Luhn validation, and structured audit logging — all in one pipeline.</p>
+</div>
+
+<!-- ══ MAIN ════════════════════════════════════════════════════════════════ -->
 <div class="main-wrap">
 
-  <!-- ── Two-column: Input + Output ──────────────────────────────────── -->
+  <!-- ── Two-column: Input + Output ──────────────────────────────────────── -->
+  <div class="section-label reveal">Analyze Text</div>
   <div class="analysis-row">
 
-    <!-- LEFT: Input Panel -->
+    <!-- Input Panel -->
     <div class="card reveal" style="transition-delay:0ms;">
       <div class="card-head">
         <div class="card-head-icon icon-purple">
@@ -675,20 +472,11 @@
         <span class="card-head-title">Input Text</span>
       </div>
       <div class="card-body">
-        <!-- Preset Buttons -->
         <div class="presets-row">
-          <button class="preset-btn" onclick="loadPreset('medical')">
-            <span class="preset-emoji">🏥</span> Medical Record
-          </button>
-          <button class="preset-btn" onclick="loadPreset('financial')">
-            <span class="preset-emoji">💳</span> Financial Doc
-          </button>
-          <button class="preset-btn" onclick="loadPreset('employee')">
-            <span class="preset-emoji">👤</span> Employee Profile
-          </button>
+          <button class="preset-btn" onclick="loadPreset('medical')"><span class="preset-emoji">🏥</span> Medical Record</button>
+          <button class="preset-btn" onclick="loadPreset('financial')"><span class="preset-emoji">💳</span> Financial Doc</button>
+          <button class="preset-btn" onclick="loadPreset('employee')"><span class="preset-emoji">👤</span> Employee Profile</button>
         </div>
-
-        <!-- Sensitivity -->
         <div class="sensitivity-row">
           <span class="sensitivity-label">Sensitivity:</span>
           <div class="sensitivity-pills">
@@ -697,23 +485,15 @@
             <button class="sensitivity-pill" id="pill-high" onclick="setSensitivity('high')">High</button>
           </div>
         </div>
-
-        <!-- Textarea -->
-        <textarea
-          id="input-text"
-          class="input-textarea"
-          placeholder="Paste text to analyze... or use a preset above."
-        ></textarea>
-
-        <!-- Analyze Button -->
+        <textarea id="input-text" class="input-textarea" placeholder="Paste text to analyze... or use a preset above."></textarea>
         <button class="analyze-btn" id="analyze-btn" onclick="analyze()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Analyze for PII
         </button>
       </div>
     </div>
 
-    <!-- RIGHT: Output Panel -->
+    <!-- Output Panel -->
     <div class="card reveal" style="transition-delay:100ms;">
       <div class="card-head">
         <div class="card-head-icon icon-blue">
@@ -730,40 +510,16 @@
     </div>
   </div>
 
-  <!-- Wave divider between analysis row and score row -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:60px;">
-      <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.02)"/>
-    </svg>
-  </div>
-
-  <!-- ── Threat Score + Detection Table + Stats ───────────────────── -->
+  <!-- ── Threat Score + Detection Table + Stats ───────────────────────── -->
+  <div class="section-label reveal" style="transition-delay:50ms;">Results</div>
   <div class="score-row">
 
     <!-- Gauge -->
     <div class="card gauge-card reveal" style="transition-delay:0ms;">
       <div class="gauge-wrap">
         <svg class="gauge-svg" viewBox="0 0 180 100">
-          <!-- Background arc (semicircle) -->
-          <path
-            d="M 18 95 A 72 72 0 0 1 162 95"
-            fill="none"
-            stroke="rgba(255,255,255,0.07)"
-            stroke-width="12"
-            stroke-linecap="round"
-          />
-          <!-- Colored arc -->
-          <path
-            id="gauge-path"
-            d="M 18 95 A 72 72 0 0 1 162 95"
-            fill="none"
-            stroke="#22c55e"
-            stroke-width="12"
-            stroke-linecap="round"
-            stroke-dasharray="226"
-            stroke-dashoffset="226"
-            style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s;"
-          />
+          <path d="M 18 95 A 72 72 0 0 1 162 95" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="12" stroke-linecap="round"/>
+          <path id="gauge-path" d="M 18 95 A 72 72 0 0 1 162 95" fill="none" stroke="#5ecb8a" stroke-width="12" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s;"/>
         </svg>
         <div class="gauge-center-text">
           <div class="gauge-score-num" id="gauge-num">0</div>
@@ -817,18 +573,11 @@
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- Wave divider between score row and audit log -->
-  <div class="wave-divider">
-    <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block;width:100%;height:60px;">
-      <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.015)"/>
-    </svg>
-  </div>
-
-  <!-- ── Audit Log ─────────────────────────────────────────────────── -->
-  <div class="card reveal" style="transition-delay:0ms;">
+  <!-- ── Audit Log ─────────────────────────────────────────────────────── -->
+  <div class="section-label reveal" style="transition-delay:0ms;">Audit Log</div>
+  <div class="card reveal" style="transition-delay:50ms;">
     <div class="card-head">
       <div class="card-head-icon icon-purple">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -841,26 +590,20 @@
     </div>
   </div>
 
-</div><!-- /.main-wrap -->
+</div>
 
 <script>
-/* ════════════════════════════════════════════════════════════════════════
-   Scroll reveal
-   ════════════════════════════════════════════════════════════════════════ */
+/* ── Scroll reveal ──────────────────────────────────────────────────────── */
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) e.target.classList.add('visible');
-}), { threshold: 0.12 });
+}), { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-/* ════════════════════════════════════════════════════════════════════════
-   State
-   ════════════════════════════════════════════════════════════════════════ */
+/* ── State ──────────────────────────────────────────────────────────────── */
 let _sensitivity = 'medium';
 let _lastDetections = [];
 
-/* ════════════════════════════════════════════════════════════════════════
-   Preset texts
-   ════════════════════════════════════════════════════════════════════════ */
+/* ── Preset texts ───────────────────────────────────────────────────────── */
 const PRESETS = {
   medical: `Patient: Michael Torres
 Date of Birth: 03/14/1978
@@ -911,311 +654,171 @@ Payroll:
   Routing: 021000021`,
 };
 
-/* ════════════════════════════════════════════════════════════════════════
-   PII type colors
-   ════════════════════════════════════════════════════════════════════════ */
 const TYPE_CHIP_CLASS = {
-  SSN:           'chip-ssn',
-  CREDIT_CARD:   'chip-credit_card',
-  EMAIL:         'chip-email',
-  PHONE:         'chip-phone',
-  MEDICAL:       'chip-medical',
-  IP_ADDRESS:    'chip-ip_address',
-  NAME:          'chip-name',
-  DATE_OF_BIRTH: 'chip-date_of_birth',
-  ADDRESS:       'chip-address',
+  SSN:'chip-ssn',CREDIT_CARD:'chip-credit_card',EMAIL:'chip-email',PHONE:'chip-phone',
+  MEDICAL:'chip-medical',IP_ADDRESS:'chip-ip_address',NAME:'chip-name',
+  DATE_OF_BIRTH:'chip-date_of_birth',ADDRESS:'chip-address',
 };
 
 const TYPE_BADGE_STYLE = {
-  SSN:           'background:rgba(239,68,68,0.18);color:#fca5a5;border:1px solid rgba(239,68,68,0.35);',
-  CREDIT_CARD:   'background:rgba(249,115,22,0.18);color:#fdba74;border:1px solid rgba(249,115,22,0.35);',
-  EMAIL:         'background:rgba(59,130,246,0.18);color:#93c5fd;border:1px solid rgba(59,130,246,0.35);',
-  PHONE:         'background:rgba(34,197,94,0.15);color:#86efac;border:1px solid rgba(34,197,94,0.30);',
-  MEDICAL:       'background:rgba(168,85,247,0.18);color:#d8b4fe;border:1px solid rgba(168,85,247,0.35);',
-  IP_ADDRESS:    'background:rgba(234,179,8,0.15);color:#fde68a;border:1px solid rgba(234,179,8,0.30);',
+  SSN:           'background:rgba(240,80,96,0.18);color:#f8a0a8;border:1px solid rgba(240,80,96,0.35);',
+  CREDIT_CARD:   'background:rgba(245,139,66,0.18);color:#fdc47a;border:1px solid rgba(245,139,66,0.35);',
+  EMAIL:         'background:rgba(106,159,245,0.18);color:#93c5fd;border:1px solid rgba(106,159,245,0.35);',
+  PHONE:         'background:rgba(94,203,138,0.15);color:#86efac;border:1px solid rgba(94,203,138,0.30);',
+  MEDICAL:       'background:rgba(168,123,232,0.18);color:#d8b4fe;border:1px solid rgba(168,123,232,0.35);',
+  IP_ADDRESS:    'background:rgba(245,200,66,0.15);color:#fde68a;border:1px solid rgba(245,200,66,0.30);',
   NAME:          'background:rgba(20,184,166,0.15);color:#99f6e4;border:1px solid rgba(20,184,166,0.30);',
   DATE_OF_BIRTH: 'background:rgba(244,63,94,0.15);color:#fda4af;border:1px solid rgba(244,63,94,0.30);',
-  ADDRESS:       'background:rgba(132,204,22,0.12);color:#bef264;border:1px solid rgba(132,204,22,0.25);',
+  ADDRESS:       'background:rgba(196,180,66,0.12);color:#e8d87a;border:1px solid rgba(196,180,66,0.25);',
 };
 
-/* ════════════════════════════════════════════════════════════════════════
-   Sensitivity
-   ════════════════════════════════════════════════════════════════════════ */
 function setSensitivity(level) {
   _sensitivity = level;
-  ['low', 'medium', 'high'].forEach(l => {
-    const el = document.getElementById('pill-' + l);
-    el.className = 'sensitivity-pill' + (l === level ? ' active-' + l : '');
+  ['low','medium','high'].forEach(l => {
+    document.getElementById('pill-'+l).className = 'sensitivity-pill' + (l===level ? ' active-'+l : '');
   });
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Presets
-   ════════════════════════════════════════════════════════════════════════ */
 function loadPreset(name) {
   document.getElementById('input-text').value = PRESETS[name] || '';
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Analyze
-   ════════════════════════════════════════════════════════════════════════ */
 async function analyze() {
   const text = document.getElementById('input-text').value.trim();
   if (!text) return;
-
   const btn = document.getElementById('analyze-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Analyzing...';
-
   try {
     const res = await fetch('/api/detect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, sensitivity: _sensitivity }),
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text, sensitivity:_sensitivity}),
     });
-
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-
     _lastDetections = data.detections || [];
-
     renderRedacted(text, data.detections, data.redacted_text);
     renderGauge(data.threat_score);
     renderDetectionTable(data.detections);
-
     const badge = document.getElementById('det-count-badge');
     badge.textContent = data.detections.length
       ? `${data.detections.length} PII item${data.detections.length > 1 ? 's' : ''} found`
       : 'Clean — no PII found';
     badge.style.color = data.detections.length ? 'var(--red)' : 'var(--green)';
-
     await loadStats();
     await loadAuditLog();
-
   } catch (err) {
-    console.error(err);
     document.getElementById('redacted-display').innerHTML =
       `<span style="color:var(--red)">Error: ${escHtml(err.message)}</span>`;
   }
-
   btn.disabled = false;
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyze for PII`;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyze for PII`;
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Render redacted text with colored highlights
-   ════════════════════════════════════════════════════════════════════════ */
 function renderRedacted(original, detections, redactedText) {
   const el = document.getElementById('redacted-display');
   if (!detections.length) {
     el.innerHTML = `<span style="color:var(--green)">&#10003; No PII detected. Text is clean.</span>\n\n${escHtml(original)}`;
-    el.classList.add('fade-in');
-    return;
+    el.classList.add('fade-in'); return;
   }
-
-  // Build highlighted redacted text by replacing [TYPE_REDACTED] tokens with styled chips
-  let html = escHtml(redactedText).replace(
-    /\[([A-Z_]+)_REDACTED\]/g,
-    (match, type) => {
-      const cls = TYPE_CHIP_CLASS[type] || 'chip-medical';
-      return `<span class="pii-chip ${cls}">${match}</span>`;
-    }
-  );
-
+  let html = escHtml(redactedText).replace(/\[([A-Z_]+)_REDACTED\]/g, (match, type) => {
+    const cls = TYPE_CHIP_CLASS[type] || 'chip-medical';
+    return `<span class="pii-chip ${cls}">${match}</span>`;
+  });
   el.innerHTML = html;
   el.classList.remove('fade-in');
   void el.offsetWidth;
   el.classList.add('fade-in');
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Gauge
-   ════════════════════════════════════════════════════════════════════════ */
 function renderGauge(score) {
   const numEl = document.getElementById('gauge-num');
   const pathEl = document.getElementById('gauge-path');
-
   numEl.textContent = score;
-
-  // Arc total length is ~226px (the semicircle path)
   const totalLen = 226;
-  const offset = totalLen - (score / 100) * totalLen;
-  pathEl.style.strokeDashoffset = offset;
-
-  // Color based on score
-  let color;
-  if (score <= 30) color = '#22c55e';
-  else if (score <= 60) color = '#eab308';
-  else if (score <= 80) color = '#f97316';
-  else color = '#ef4444';
-
+  pathEl.style.strokeDashoffset = totalLen - (score/100)*totalLen;
+  let color = score<=30?'#5ecb8a':score<=60?'#f5c842':score<=80?'#f58b42':'#f05060';
   pathEl.style.stroke = color;
   numEl.style.color = color;
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Detection Results Table
-   ════════════════════════════════════════════════════════════════════════ */
 function renderDetectionTable(detections) {
   const wrap = document.getElementById('det-table-wrap');
-
-  if (!detections.length) {
-    wrap.innerHTML = '<div class="empty-table">No PII detected in this scan.</div>';
-    return;
-  }
-
+  if (!detections.length) { wrap.innerHTML='<div class="empty-table">No PII detected in this scan.</div>'; return; }
   const rows = detections.map(d => {
     const style = TYPE_BADGE_STYLE[d.type] || 'background:rgba(255,255,255,0.1);color:var(--text-muted);';
     const masked = maskValue(d.value, d.type);
-    const riskClass = 'risk-' + d.risk_level;
-    const riskDot = d.risk_level === 'critical' ? '#ef4444'
-                  : d.risk_level === 'high' ? '#f97316'
-                  : d.risk_level === 'medium' ? '#eab308' : '#22c55e';
-    return `
-      <tr>
-        <td><span class="det-type-badge" style="${escAttr(style)}">${escHtml(d.type.replace(/_/g,' '))}</span></td>
-        <td><span class="masked-value">${escHtml(masked)}</span></td>
-        <td><span class="risk-badge ${riskClass}"><span style="width:6px;height:6px;border-radius:50%;background:${riskDot};flex-shrink:0;display:inline-block;"></span>${escHtml(d.risk_level)}</span></td>
-        <td style="font-family:var(--mono);font-size:11px;color:var(--text-dim);">${d.start}–${d.end}</td>
-      </tr>
-    `;
+    const riskClass = 'risk-'+d.risk_level;
+    const riskDot = d.risk_level==='critical'?'#f05060':d.risk_level==='high'?'#f58b42':d.risk_level==='medium'?'#f5c842':'#5ecb8a';
+    return `<tr>
+      <td><span class="det-type-badge" style="${escAttr(style)}">${escHtml(d.type.replace(/_/g,' '))}</span></td>
+      <td><span class="masked-value">${escHtml(masked)}</span></td>
+      <td><span class="risk-badge ${riskClass}"><span style="width:6px;height:6px;border-radius:50%;background:${riskDot};flex-shrink:0;display:inline-block;"></span>${escHtml(d.risk_level)}</span></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--text-dim);">${d.start}–${d.end}</td>
+    </tr>`;
   }).join('');
-
-  wrap.innerHTML = `
-    <table class="det-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Value (masked)</th>
-          <th>Risk Level</th>
-          <th>Position</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
+  wrap.innerHTML = `<table class="det-table"><thead><tr><th>Type</th><th>Value (masked)</th><th>Risk Level</th><th>Position</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function maskValue(value, type) {
-  if (type === 'EMAIL') {
-    const at = value.indexOf('@');
-    if (at > 2) return value.slice(0, 2) + '***' + value.slice(at);
-    return '***' + value.slice(at);
-  }
-  if (type === 'SSN') return '***-**-' + value.slice(-4);
-  if (type === 'CREDIT_CARD') return '**** **** **** ' + value.replace(/\D/g,'').slice(-4);
-  if (type === 'PHONE') return value.slice(0, 3) + '***' + value.slice(-4);
-  if (value.length > 12) return value.slice(0, 4) + '...' + value.slice(-4);
+  if (type==='EMAIL') { const at=value.indexOf('@'); return at>2?value.slice(0,2)+'***'+value.slice(at):'***'+value.slice(at); }
+  if (type==='SSN') return '***-**-'+value.slice(-4);
+  if (type==='CREDIT_CARD') return '**** **** **** '+value.replace(/\D/g,'').slice(-4);
+  if (type==='PHONE') return value.slice(0,3)+'***'+value.slice(-4);
+  if (value.length>12) return value.slice(0,4)+'...'+value.slice(-4);
   return value;
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Stats
-   ════════════════════════════════════════════════════════════════════════ */
 async function loadStats() {
   try {
-    const data = await fetch('/api/stats').then(r => r.json());
-    document.getElementById('stat-total').textContent = data.total_scans ?? '—';
-    document.getElementById('stat-top-pii').textContent =
-      data.most_common_pii ? data.most_common_pii.replace(/_/g,' ') : '—';
-    document.getElementById('stat-avg').textContent =
-      data.avg_threat_score != null ? Math.round(data.avg_threat_score) : '—';
-  } catch (_) {}
+    const data = await fetch('/api/stats').then(r=>r.json());
+    document.getElementById('stat-total').textContent = data.total_scans??'—';
+    document.getElementById('stat-top-pii').textContent = data.most_common_pii?data.most_common_pii.replace(/_/g,' '):'—';
+    document.getElementById('stat-avg').textContent = data.avg_threat_score!=null?Math.round(data.avg_threat_score):'—';
+  } catch(_) {}
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Audit Log
-   ════════════════════════════════════════════════════════════════════════ */
 async function loadAuditLog() {
   try {
-    const data = await fetch('/api/audit-log').then(r => r.json());
-    renderAuditLog(data.slice(0, 10));
-    const info = document.getElementById('audit-refresh-info');
-    info.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-  } catch (_) {}
+    const data = await fetch('/api/audit-log').then(r=>r.json());
+    renderAuditLog(data.slice(0,10));
+    document.getElementById('audit-refresh-info').textContent = 'Last updated: '+new Date().toLocaleTimeString();
+  } catch(_) {}
 }
 
 function renderAuditLog(entries) {
   const wrap = document.getElementById('audit-log-wrap');
-  if (!entries.length) {
-    wrap.innerHTML = '<div class="empty-table">No audit entries yet.</div>';
-    return;
-  }
-
+  if (!entries.length) { wrap.innerHTML='<div class="empty-table">No audit entries yet.</div>'; return; }
   const rows = entries.map(e => {
-    let types = [];
-    try { types = JSON.parse(e.pii_types_found); } catch (_) {}
-
+    let types=[];
+    try{types=JSON.parse(e.pii_types_found);}catch(_){}
     const typeTags = types.map(t => {
-      const style = TYPE_BADGE_STYLE[t] || 'background:rgba(255,255,255,0.08);color:var(--text-muted);';
+      const style = TYPE_BADGE_STYLE[t]||'background:rgba(255,255,255,0.08);color:var(--text-muted);';
       return `<span class="pii-tag" style="${escAttr(style)}">${escHtml(t.replace(/_/g,' '))}</span>`;
     }).join('');
-
     const score = e.threat_score;
-    const scoreColor = score <= 30 ? 'var(--green)' : score <= 60 ? 'var(--yellow)' : score <= 80 ? 'var(--orange)' : 'var(--red)';
-    const ts = new Date(e.timestamp).toLocaleString();
-
-    return `
-      <tr>
-        <td><span class="audit-ts">${escHtml(ts)}</span></td>
-        <td style="color:var(--text-muted);">${e.text_length ?? '—'} chars</td>
-        <td><div class="pii-tags">${typeTags || '<span style="color:var(--text-dim);font-style:italic;font-size:11px;">none</span>'}</div></td>
-        <td><span style="font-weight:700;color:${scoreColor};">${score}</span><span style="color:var(--text-dim);font-size:11px;">/100</span></td>
-      </tr>
-    `;
+    const scoreColor = score<=30?'var(--green)':score<=60?'var(--yellow)':score<=80?'var(--orange)':'var(--red)';
+    return `<tr>
+      <td><span class="audit-ts">${escHtml(new Date(e.timestamp).toLocaleString())}</span></td>
+      <td style="color:var(--text-muted);">${e.text_length??'—'} chars</td>
+      <td><div class="pii-tags">${typeTags||'<span style="color:var(--text-dim);font-style:italic;font-size:11px;">none</span>'}</div></td>
+      <td><span style="font-weight:700;color:${scoreColor};">${score}</span><span style="color:var(--text-dim);font-size:11px;">/100</span></td>
+    </tr>`;
   }).join('');
-
-  wrap.innerHTML = `
-    <table class="audit-table">
-      <thead>
-        <tr>
-          <th>Timestamp</th>
-          <th>Text Length</th>
-          <th>PII Types Found</th>
-          <th>Threat Score</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-  `;
+  wrap.innerHTML = `<table class="audit-table"><thead><tr><th>Timestamp</th><th>Text Length</th><th>PII Types Found</th><th>Threat Score</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   Utilities
-   ════════════════════════════════════════════════════════════════════════ */
-function escHtml(str) {
-  return String(str ?? '')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+function escHtml(str){return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escAttr(str){return String(str??'').replace(/"/g,'&quot;');}
 
-function escAttr(str) {
-  return String(str ?? '').replace(/"/g, '&quot;');
-}
-
-/* ════════════════════════════════════════════════════════════════════════
-   Init
-   ════════════════════════════════════════════════════════════════════════ */
 (async function init() {
-  // Health check
   try {
-    const h = await fetch('/api/health').then(r => r.json());
-    document.getElementById('status-text').textContent = `Online · ${h.version || 'v1'}`;
-  } catch (_) {
-    document.getElementById('status-text').textContent = 'Offline';
-  }
-
-  // Load initial stats and audit log
+    const h = await fetch('/api/health').then(r=>r.json());
+    document.getElementById('status-text').textContent = `Online · ${h.version||'v1'}`;
+  } catch(_) { document.getElementById('status-text').textContent='Offline'; }
   await loadStats();
   await loadAuditLog();
-
-  // Auto-refresh audit log every 30s
-  setInterval(async () => {
-    await loadStats();
-    await loadAuditLog();
-  }, 30000);
+  setInterval(async()=>{ await loadStats(); await loadAuditLog(); }, 30000);
 })();
 </script>
 </body>
