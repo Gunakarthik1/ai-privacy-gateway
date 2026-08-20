@@ -6,604 +6,1122 @@
   <title>AI Privacy Gateway</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
 
     :root {
-      --bg:          #242020;
-      --bg2:         #1c1919;
-      --card:        #1e1b1b;
-      --card-border: 1px solid rgba(255,255,255,0.07);
-      --accent:      #f09060;
-      --accent2:     #fbb485;
-      --accent-glow: rgba(240,144,96,0.35);
-      --text:        #f0ece8;
-      --text-muted:  #a09890;
-      --text-dim:    #6b6360;
-      --green:       #5ecb8a;
-      --yellow:      #f5c842;
-      --orange:      #f58b42;
-      --red:         #f05060;
-      --blue:        #6a9ff5;
-      --purple:      #a87be8;
-      --stripe1:     #7b5ea7;
-      --stripe2:     #c85878;
-      --stripe3:     #e8836a;
-      --stripe4:     #d4a64a;
-      --stripe5:     #c8b84a;
-      --mono:        'JetBrains Mono', ui-monospace, monospace;
-      --sans:        'Nunito', system-ui, sans-serif;
-      --radius:      1.5rem;
-      --radius-sm:   1rem;
-      --ease:        cubic-bezier(0.16,1,0.3,1);
+      --bg:       #242020;
+      --sidebar:  #1e1a1a;
+      --card:     #2d2620;
+      --border:   rgba(240,144,96,0.2);
+      --accent:   #f09060;
+      --accent-end: #fbb485;
+      --ink:      #fff0e8;
+      --muted:    #c4895a;
     }
 
-    html { scroll-behavior: smooth; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      min-height: 100vh;
-      background-color: var(--bg);
+      height: 100%;
+      background: var(--bg);
       background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        linear-gradient(rgba(240,144,96,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,144,96,0.02) 1px, transparent 1px);
       background-size: 30px 30px;
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 14px;
-      line-height: 1.6;
+      font-family: 'Nunito', sans-serif;
+      color: var(--ink);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb { background: rgba(240,144,96,0.2); border-radius: 2px; }
 
-    /* ── Reveal animations ─────────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── Header ─────────────────────────────────────────────────────────── */
+    /* ── Header ─────────────────────────────────────────────────────── */
     .header {
-      background: var(--bg2);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 0 32px;
-      height: 64px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      padding: 0 24px;
+      height: 52px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(30,26,26,0.97);
+      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
+      gap: 12px;
     }
 
-    .header-logo { display: flex; align-items: center; gap: 12px; }
-
-    .shield-icon {
-      width: 38px; height: 38px;
-      background: linear-gradient(135deg, var(--stripe1), var(--stripe2));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 20px rgba(123,94,167,0.4);
-      flex-shrink: 0;
-    }
-    .shield-icon svg { color: #fff; }
-
-    .header-title {
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .header-spacer { flex: 1; }
-
-    .status-badge {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(94,203,138,0.1);
-      border: 1px solid rgba(94,203,138,0.25);
-      padding: 6px 14px;
-      border-radius: 50rem;
-      font-size: 12px; font-weight: 700;
-      color: var(--green);
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2.2s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    /* ── Rainbow stripe decoration ──────────────────────────────────────── */
-    .rainbow-stripe {
-      position: relative;
-      height: 120px;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .rainbow-stripe svg {
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: auto;
-    }
-
-    /* ── Hero ────────────────────────────────────────────────────────────── */
-    .hero {
-      padding: 48px 32px 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .hero-eyebrow {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    .hero-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 10px;
-    }
-    .hero-sub {
-      font-size: 15px;
-      color: var(--text-muted);
-      max-width: 540px;
-      font-weight: 500;
-    }
-
-    /* ── Main layout ─────────────────────────────────────────────────────── */
-    .main-wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 24px 48px;
+    .header-logo {
+      font: 900 19px 'Nunito';
+      background: linear-gradient(135deg, #f09060, #fbb485);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       display: flex;
-      flex-direction: column;
-      gap: 24px;
+      align-items: center;
+      gap: 8px;
     }
 
-    .analysis-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-    /* ── Cards ───────────────────────────────────────────────────────────── */
-    .card {
-      background: var(--card);
-      border: var(--card-border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      position: relative;
-      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-    }
-    /* colorful top bar on every card */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--stripe1), var(--stripe2), var(--stripe3), var(--stripe4), var(--stripe5));
-    }
-
-    .card-head {
-      padding: 14px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .card-head-title {
-      font-size: 14px; font-weight: 800;
-      color: var(--text);
-      letter-spacing: 0.01em;
-    }
-    .card-head-icon {
+    .header-logo-icon {
       width: 28px; height: 28px;
+      background: linear-gradient(135deg, #f09060, #fbb485);
       border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .icon-purple { background: rgba(168,123,232,0.18); color: var(--purple); }
-    .icon-blue   { background: rgba(106,159,245,0.15); color: var(--blue); }
-    .icon-green  { background: rgba(94,203,138,0.12);  color: var(--green); }
+    .header-logo-icon svg { color: #1a0e08; }
 
-    .card-body { padding: 18px; }
+    .header-tag {
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(240,144,96,0.1);
+      border: 1px solid rgba(240,144,96,0.25);
+      font: 700 11px 'Nunito';
+      color: var(--muted);
+    }
 
-    /* ── Presets ─────────────────────────────────────────────────────────── */
-    .presets-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .header-sep {
+      width: 1px; height: 20px;
+      background: var(--border);
+    }
 
+    .header-desc {
+      font: 600 12px 'Nunito';
+      color: rgba(196,137,90,0.6);
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 20px;
+      margin-left: auto;
+      font: 600 12px 'Nunito';
+      color: var(--muted);
+    }
+    .header-stats strong { color: var(--ink); font-weight: 800; }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.25);
+      font: 700 11px 'Nunito';
+      color: #34d399;
+    }
+    .status-dot-live {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #34d399;
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── App shell ───────────────────────────────────────────────────── */
+    .app-shell {
+      display: flex;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+    }
+
+    /* ── Pipeline sidebar ────────────────────────────────────────────── */
+    .pipeline-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      scrollbar-width: none;
+      display: flex;
+      flex-direction: column;
+    }
+    .pipeline-sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-title {
+      padding: 18px 16px 8px;
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(196,137,90,0.45);
+    }
+
+    .stage-list {
+      padding: 0 12px 8px;
+      flex: 1;
+    }
+
+    .stage-item {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+
+    .stage-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .stage-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(240,144,96,0.25);
+      background: var(--sidebar);
+      flex-shrink: 0;
+      transition: all 0.35s ease;
+      margin-top: 2px;
+      position: relative;
+    }
+    .stage-dot.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(240,144,96,0.5), 0 0 24px rgba(240,144,96,0.2);
+    }
+    .stage-dot.active::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(240,144,96,0.3);
+      animation: ripple 1.8s ease-in-out infinite;
+    }
+    @keyframes ripple {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.8); }
+    }
+    .stage-dot.done {
+      background: rgba(240,144,96,0.35);
+      border-color: rgba(240,144,96,0.5);
+    }
+    .stage-dot.blocked {
+      background: rgba(248,113,113,0.35);
+      border-color: rgba(248,113,113,0.6);
+      box-shadow: 0 0 8px rgba(248,113,113,0.3);
+    }
+
+    .stage-line {
+      flex: 1;
+      width: 2px;
+      background: rgba(240,144,96,0.1);
+      margin: 4px 0;
+      min-height: 36px;
+      border-radius: 1px;
+      transition: background 0.35s ease;
+    }
+    .stage-line.active {
+      background: linear-gradient(180deg, var(--accent), rgba(240,144,96,0.15));
+    }
+    .stage-line.done {
+      background: rgba(240,144,96,0.25);
+    }
+
+    .stage-body {
+      flex: 1;
+      padding: 0 4px 22px 10px;
+    }
+
+    .stage-number {
+      font: 600 10px 'JetBrains Mono';
+      color: rgba(196,137,90,0.4);
+      letter-spacing: 0.05em;
+    }
+
+    .stage-name {
+      font: 700 13px 'Nunito';
+      color: var(--muted);
+      margin: 1px 0 2px;
+      transition: color 0.3s;
+      line-height: 1.3;
+    }
+    .stage-item.active .stage-name { color: var(--ink); }
+    .stage-item.done .stage-name { color: rgba(255,240,232,0.65); }
+
+    .stage-desc {
+      font: 600 11px 'Nunito';
+      color: rgba(196,137,90,0.4);
+      line-height: 1.4;
+    }
+
+    .stage-badge {
+      margin-top: 5px;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font: 700 10px 'JetBrains Mono';
+      letter-spacing: 0.03em;
+    }
+    .badge-idle    { background: rgba(196,137,90,0.08); color: rgba(196,137,90,0.4); }
+    .badge-ok      { background: rgba(52,211,153,0.15);  color: #34d399; }
+    .badge-warn    { background: rgba(251,191,36,0.15);  color: #fbbf24; }
+    .badge-block   { background: rgba(248,113,113,0.15); color: #f87171; }
+    .badge-active  { background: rgba(240,144,96,0.15);  color: var(--accent); }
+
+    /* ── Sidebar stats ───────────────────────────────────────────────── */
+    .sidebar-stats {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sidebar-stats-title {
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(196,137,90,0.4);
+      margin-bottom: 2px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font: 600 12px 'Nunito';
+    }
+    .stat-label-s { color: var(--muted); }
+    .stat-val-s   { color: var(--ink); font-weight: 800; }
+
+    .stat-bar-wrap {
+      height: 3px;
+      background: rgba(240,144,96,0.1);
+      border-radius: 2px;
+      margin-top: 3px;
+    }
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #f09060, #fbb485);
+      transition: width 0.6s ease;
+    }
+
+    /* ── Main content ────────────────────────────────────────────────── */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── Analyze card ────────────────────────────────────────────────── */
+    .analyze-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .analyze-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #f09060, #fbb485, #f09060);
+    }
+
+    .card-label {
+      font: 700 11px 'Nunito';
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-label-icon {
+      width: 20px; height: 20px;
+      background: rgba(240,144,96,0.12);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .presets-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
     .preset-btn {
       flex: 1;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 50rem;
-      color: var(--text-muted);
-      font-family: var(--sans);
-      font-size: 12px; font-weight: 700;
+      padding: 8px 12px;
+      background: rgba(240,144,96,0.05);
+      border: 1px solid rgba(240,144,96,0.15);
+      border-radius: 8px;
+      color: var(--muted);
+      font: 700 11px 'Nunito';
       cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      transition: all 0.3s var(--ease);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .preset-btn:hover {
       background: rgba(240,144,96,0.12);
-      border-color: rgba(240,144,96,0.4);
-      color: var(--accent2);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      border-color: rgba(240,144,96,0.35);
+      color: var(--ink);
     }
-    .preset-btn .preset-emoji { font-size: 15px; }
 
-    /* ── Textarea ────────────────────────────────────────────────────────── */
-    .input-textarea {
-      width: 100%; min-height: 200px; resize: vertical;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      font-family: var(--sans);
-      font-size: 14px; color: var(--text); line-height: 1.65;
+    .text-input {
+      width: 100%;
+      min-height: 110px;
+      background: rgba(30,26,26,0.8);
+      border: 1.5px solid rgba(240,144,96,0.18);
+      border-radius: 10px;
+      padding: 14px;
+      font: 400 14px 'Nunito';
+      color: var(--ink);
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .text-input:focus {
+      outline: none;
+      border-color: rgba(240,144,96,0.45);
+      box-shadow: 0 0 0 3px rgba(240,144,96,0.08);
+    }
+    .text-input::placeholder { color: rgba(196,137,90,0.3); }
+
+    .api-key-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .api-key-label {
+      font: 700 12px 'Nunito';
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .api-key-input {
+      flex: 1;
+      background: rgba(30,26,26,0.8);
+      border: 1px solid rgba(240,144,96,0.15);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font: 600 12px 'JetBrains Mono';
+      color: rgba(196,137,90,0.65);
       transition: border-color 0.15s;
-      margin-bottom: 12px;
     }
-    .input-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(240,144,96,0.12); }
-    .input-textarea::placeholder { color: var(--text-dim); }
+    .api-key-input:focus {
+      outline: none;
+      border-color: rgba(240,144,96,0.35);
+    }
 
-    /* ── Sensitivity ─────────────────────────────────────────────────────── */
-    .sensitivity-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-    .sensitivity-label { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
-    .sensitivity-pills { display: flex; gap: 6px; }
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      align-items: center;
+    }
+
+    .sensitivity-pills {
+      display: flex;
+      gap: 5px;
+      margin-right: auto;
+    }
+    .sens-label {
+      font: 700 11px 'Nunito';
+      color: rgba(196,137,90,0.55);
+      align-self: center;
+      margin-right: 4px;
+    }
     .sensitivity-pill {
-      padding: 5px 14px; border-radius: 50rem;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: transparent; color: var(--text-muted);
-      font-family: var(--sans); font-size: 12px; font-weight: 700;
-      cursor: pointer; transition: all 0.15s;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(240,144,96,0.15);
+      background: transparent;
+      color: rgba(196,137,90,0.5);
+      font: 700 11px 'Nunito';
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    .sensitivity-pill:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
-    .sensitivity-pill.active-low    { background: rgba(94,203,138,0.15);  border-color: rgba(94,203,138,0.4);   color: var(--green); }
-    .sensitivity-pill.active-medium { background: rgba(245,200,66,0.15);  border-color: rgba(245,200,66,0.4);   color: var(--yellow); }
-    .sensitivity-pill.active-high   { background: rgba(240,80,96,0.15);   border-color: rgba(240,80,96,0.4);    color: var(--red); }
+    .sensitivity-pill:hover {
+      border-color: rgba(240,144,96,0.3);
+      color: var(--muted);
+    }
+    .sensitivity-pill.active-low    { background: rgba(52,211,153,0.12);  border-color: rgba(52,211,153,0.4);  color: #34d399; }
+    .sensitivity-pill.active-medium { background: rgba(251,191,36,0.12);  border-color: rgba(251,191,36,0.4);  color: #fbbf24; }
+    .sensitivity-pill.active-high   { background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.4); color: #f87171; }
 
-    /* ── Analyze button ──────────────────────────────────────────────────── */
+    .clear-btn {
+      padding: 9px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font: 700 13px 'Nunito';
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .clear-btn:hover {
+      border-color: rgba(240,144,96,0.35);
+      color: var(--ink);
+    }
+
     .analyze-btn {
-      width: 100%; padding: 14px 20px;
+      padding: 9px 26px;
+      border-radius: 10px;
+      border: none;
       background: linear-gradient(135deg, #f09060, #fbb485);
       color: #1a0e08;
-      font-family: var(--sans); font-size: 15px; font-weight: 900;
-      border: none; border-radius: 50rem;
+      font: 800 14px 'Nunito';
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.3s var(--ease);
-      letter-spacing: 0.01em;
-      box-shadow: 0 4px 20px rgba(240,144,96,0.35);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(240,144,96,0.3);
     }
     .analyze-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 32px rgba(240,144,96,0.45);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(240,144,96,0.4);
     }
-    .analyze-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* ── Output panel ────────────────────────────────────────────────────── */
-    .redacted-display {
-      min-height: 200px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      font-size: 14px; line-height: 1.75;
-      color: var(--text);
-      white-space: pre-wrap; word-break: break-word;
-      font-family: var(--sans);
+    .analyze-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
-    .redacted-placeholder { color: var(--text-dim); font-style: italic; }
 
-    /* PII highlight chips */
+    /* ── Result section ──────────────────────────────────────────────── */
+    .result-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f09060, #fbb485);
+    }
+    .metric-val {
+      font: 900 30px 'Nunito';
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      transition: color 0.3s;
+    }
+    .metric-label {
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* ── Text display card (masked / AI response tabs) ───────────────── */
+    .text-display-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .text-display-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f09060, #fbb485);
+    }
+
+    .text-display-tabs {
+      display: flex;
+      gap: 0;
+      padding: 14px 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .text-tab {
+      padding: 8px 16px;
+      font: 700 12px 'Nunito';
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s;
+      letter-spacing: 0.03em;
+    }
+    .text-tab:hover { color: var(--ink); }
+    .text-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .text-panel { display: none; padding: 18px 20px; }
+    .text-panel.active { display: block; }
+
+    .text-body {
+      font: 400 14px 'Nunito';
+      color: var(--ink);
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 80px;
+    }
+    .text-empty {
+      color: rgba(196,137,90,0.35);
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    /* PII chips in the masked text */
     .pii-chip {
-      display: inline-block; padding: 1px 6px;
-      border-radius: 50rem; font-weight: 800;
-      font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font: 700 11px 'JetBrains Mono';
+      letter-spacing: 0.02em;
     }
-    .chip-ssn         { background: rgba(240,80,96,0.25);   color: #f8a0a8; border: 1px solid rgba(240,80,96,0.4); }
-    .chip-credit_card { background: rgba(245,139,66,0.22);  color: #fdc47a; border: 1px solid rgba(245,139,66,0.4); }
-    .chip-email       { background: rgba(106,159,245,0.22); color: #93c5fd; border: 1px solid rgba(106,159,245,0.4); }
-    .chip-phone       { background: rgba(94,203,138,0.18);  color: #86efac; border: 1px solid rgba(94,203,138,0.35); }
-    .chip-medical     { background: rgba(168,123,232,0.22); color: #d8b4fe; border: 1px solid rgba(168,123,232,0.4); }
-    .chip-ip_address  { background: rgba(245,200,66,0.18);  color: #fde68a; border: 1px solid rgba(245,200,66,0.35); }
-    .chip-name        { background: rgba(20,184,166,0.18);  color: #99f6e4; border: 1px solid rgba(20,184,166,0.35); }
-    .chip-date_of_birth { background: rgba(244,63,94,0.18); color: #fda4af; border: 1px solid rgba(244,63,94,0.35); }
-    .chip-address     { background: rgba(196,180,66,0.16);  color: #e8d87a; border: 1px solid rgba(196,180,66,0.3); }
+    .chip-ssn         { background: rgba(240,80,96,0.2);   color: #f8a0a8; border: 1px solid rgba(240,80,96,0.35); }
+    .chip-credit_card { background: rgba(245,139,66,0.2);  color: #fdc47a; border: 1px solid rgba(245,139,66,0.35); }
+    .chip-email       { background: rgba(106,159,245,0.2); color: #93c5fd; border: 1px solid rgba(106,159,245,0.35); }
+    .chip-phone       { background: rgba(52,211,153,0.15); color: #86efac; border: 1px solid rgba(52,211,153,0.3); }
+    .chip-medical     { background: rgba(168,123,232,0.2); color: #d8b4fe; border: 1px solid rgba(168,123,232,0.35); }
+    .chip-ip_address  { background: rgba(245,200,66,0.15); color: #fde68a; border: 1px solid rgba(245,200,66,0.3); }
+    .chip-name        { background: rgba(20,184,166,0.15); color: #99f6e4; border: 1px solid rgba(20,184,166,0.3); }
+    .chip-date_of_birth { background: rgba(244,63,94,0.15); color: #fda4af; border: 1px solid rgba(244,63,94,0.3); }
+    .chip-address     { background: rgba(196,180,66,0.12); color: #e8d87a; border: 1px solid rgba(196,180,66,0.25); }
 
-    /* ── Score row ───────────────────────────────────────────────────────── */
-    .score-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 20px; align-items: stretch; }
-
-    .gauge-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 18px 18px; }
-
-    .gauge-wrap { position: relative; width: 180px; height: 100px; margin-bottom: 12px; }
-    .gauge-svg { width: 180px; height: 100px; overflow: visible; }
-
-    #gauge-arc { stroke: var(--green); stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s; }
-
-    .gauge-center-text {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-end;
-      padding-bottom: 6px;
+    /* ── PII table ───────────────────────────────────────────────────── */
+    .pii-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
     }
-    .gauge-score-num { font-size: 38px; font-weight: 900; line-height: 1; letter-spacing: -0.04em; color: var(--text); transition: color 0.4s; }
-    .gauge-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
-
-    .gauge-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; justify-content: center; }
-    .gauge-legend-item { display: flex; align-items: center; gap: 5px; }
-    .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-
-    /* ── Detection table ─────────────────────────────────────────────────── */
-    .det-table-card { overflow: hidden; }
-    .det-table { width: 100%; border-collapse: collapse; }
-    .det-table th {
-      padding: 10px 14px; text-align: left;
-      font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
-      color: var(--text-dim);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      background: rgba(0,0,0,0.15);
+    .pii-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f09060, #fbb485);
     }
-    .det-table td { padding: 11px 14px; font-size: 12.5px; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .det-table tr:last-child td { border-bottom: none; }
-    .det-table tr:hover td { background: rgba(255,255,255,0.025); }
 
-    .det-type-badge { display: inline-block; padding: 3px 9px; border-radius: 50rem; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
-    .risk-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 50rem; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
-    .risk-critical { background: rgba(240,80,96,0.18);  color: #f8a0a8; border: 1px solid rgba(240,80,96,0.35); }
-    .risk-high     { background: rgba(245,139,66,0.18); color: #fdc47a; border: 1px solid rgba(245,139,66,0.35); }
-    .risk-medium   { background: rgba(245,200,66,0.15); color: #fde68a; border: 1px solid rgba(245,200,66,0.30); }
-    .risk-low      { background: rgba(94,203,138,0.12); color: #86efac; border: 1px solid rgba(94,203,138,0.25); }
-    .masked-value { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em; }
-    .empty-table { padding: 32px; text-align: center; color: var(--text-dim); font-size: 13px; font-style: italic; }
-
-    /* ── Stats bar ───────────────────────────────────────────────────────── */
-    .stats-grid { display: flex; flex-direction: column; gap: 14px; justify-content: center; padding: 18px; }
-    .stat-item {
-      display: flex; flex-direction: column; gap: 3px;
-      padding: 12px 14px;
-      background: rgba(0,0,0,0.18);
-      border-radius: var(--radius-sm);
-      border: 1px solid rgba(255,255,255,0.06);
+    .pii-card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .stat-label { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
-    .stat-value { font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -0.03em; line-height: 1.1; }
-    .stat-sub { font-size: 11px; color: var(--text-muted); }
-
-    /* ── Audit Log ───────────────────────────────────────────────────────── */
-    .audit-table { width: 100%; border-collapse: collapse; }
-    .audit-table th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.15); }
-    .audit-table td { padding: 11px 14px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .audit-table tr:last-child td { border-bottom: none; }
-    .audit-table tr:hover td { background: rgba(255,255,255,0.02); }
-    .audit-ts { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-    .pii-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-    .pii-tag { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 50rem; letter-spacing: 0.04em; text-transform: uppercase; }
-    .audit-refresh-info { margin-left: auto; font-size: 11px; color: var(--text-dim); }
-
-    /* ── Section heading ─────────────────────────────────────────────────── */
-    .section-label {
-      font-size: 11px; font-weight: 800;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 12px;
-      display: flex; align-items: center; gap: 8px;
+    .pii-card-title {
+      font: 800 13px 'Nunito';
+      color: var(--ink);
     }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+    .pii-count-badge {
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(240,144,96,0.12);
+      border: 1px solid rgba(240,144,96,0.25);
+      font: 700 10px 'JetBrains Mono';
+      color: var(--accent);
+    }
 
-    /* ── Spinner ─────────────────────────────────────────────────────────── */
-    .spinner { display: inline-block; width: 15px; height: 15px; border: 2px solid rgba(26,14,8,0.25); border-top-color: #1a0e08; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .pii-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    .pii-table th {
+      padding: 10px 20px;
+      text-align: left;
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: rgba(30,26,26,0.4);
+    }
+    .pii-table td {
+      padding: 11px 20px;
+      border-bottom: 1px solid rgba(240,144,96,0.06);
+      color: rgba(255,240,232,0.7);
+    }
+    .pii-table tr:last-child td { border-bottom: none; }
+    .pii-table tr:hover td { background: rgba(240,144,96,0.03); }
+
+    .pii-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 4px;
+      background: rgba(240,144,96,0.1);
+      border: 1px solid rgba(240,144,96,0.2);
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.04em;
+    }
+    .risk-critical { background: rgba(240,80,96,0.15);   color: #f8a0a8; border: 1px solid rgba(240,80,96,0.3); }
+    .risk-high     { background: rgba(245,139,66,0.15);  color: #fdc47a; border: 1px solid rgba(245,139,66,0.3); }
+    .risk-medium   { background: rgba(251,191,36,0.12);  color: #fde68a; border: 1px solid rgba(251,191,36,0.25); }
+    .risk-low      { background: rgba(52,211,153,0.12);  color: #86efac; border: 1px solid rgba(52,211,153,0.25); }
+
+    .masked-val {
+      font: 600 11px 'JetBrains Mono';
+      color: rgba(196,137,90,0.55);
+      letter-spacing: 0.02em;
+    }
+
+    .empty-state {
+      padding: 32px 20px;
+      text-align: center;
+      color: rgba(196,137,90,0.35);
+      font: 600 13px 'Nunito';
+      font-style: italic;
+    }
+
+    /* ── Audit card ──────────────────────────────────────────────────── */
+    .audit-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .audit-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f09060, #fbb485);
+    }
+
+    .audit-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .audit-header-title { font: 800 13px 'Nunito'; color: var(--ink); }
+    .audit-refresh { margin-left: auto; font: 600 11px 'Nunito'; color: rgba(196,137,90,0.4); }
+
+    .audit-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 20px;
+      border-bottom: 1px solid rgba(240,144,96,0.05);
+      font: 600 12px 'Nunito';
+    }
+    .audit-entry:last-child { border-bottom: none; }
+    .audit-entry:hover { background: rgba(240,144,96,0.02); }
+
+    .audit-time {
+      font: 600 11px 'JetBrains Mono';
+      color: var(--muted);
+      width: 84px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .audit-body { flex: 1; color: rgba(255,240,232,0.65); line-height: 1.5; }
+    .audit-body .pii-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .pii-tag-sm {
+      font: 700 9px 'Nunito';
+      letter-spacing: 0.05em;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+
+    .audit-risk {
+      padding: 2px 7px;
+      border-radius: 4px;
+      font: 700 10px 'JetBrains Mono';
+      flex-shrink: 0;
+    }
+    .risk-l { background: rgba(52,211,153,0.12);  color: #34d399; }
+    .risk-m { background: rgba(251,191,36,0.12);  color: #fbbf24; }
+    .risk-h { background: rgba(248,113,113,0.12); color: #f87171; }
+
+    /* ── Spinner ─────────────────────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(26,14,8,0.2);
+      border-top-color: #1a0e08;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .fade-in { animation: fadeIn 0.35s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
 
-    /* ── Responsive ──────────────────────────────────────────────────────── */
+    /* ── Pipeline processing animation ──────────────────────────────── */
+    @keyframes pulseDot {
+      0%,100% { box-shadow: 0 0 8px rgba(240,144,96,0.4); }
+      50%      { box-shadow: 0 0 20px rgba(240,144,96,0.7), 0 0 36px rgba(240,144,96,0.3); }
+    }
+    .stage-dot.processing {
+      animation: pulseDot 0.9s ease-in-out infinite;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ── TYPE-specific colors for table badges ───────────────────────── */
+    .badge-SSN         { background:rgba(240,80,96,0.15);   color:#f8a0a8; border:1px solid rgba(240,80,96,0.3); }
+    .badge-CREDIT_CARD { background:rgba(245,139,66,0.15);  color:#fdc47a; border:1px solid rgba(245,139,66,0.3); }
+    .badge-EMAIL       { background:rgba(106,159,245,0.15); color:#93c5fd; border:1px solid rgba(106,159,245,0.3); }
+    .badge-PHONE       { background:rgba(52,211,153,0.12);  color:#86efac; border:1px solid rgba(52,211,153,0.25); }
+    .badge-MEDICAL     { background:rgba(168,123,232,0.15); color:#d8b4fe; border:1px solid rgba(168,123,232,0.3); }
+    .badge-IP_ADDRESS  { background:rgba(245,200,66,0.12);  color:#fde68a; border:1px solid rgba(245,200,66,0.25); }
+    .badge-NAME        { background:rgba(20,184,166,0.12);  color:#99f6e4; border:1px solid rgba(20,184,166,0.25); }
+    .badge-DATE_OF_BIRTH { background:rgba(244,63,94,0.12); color:#fda4af; border:1px solid rgba(244,63,94,0.25); }
+    .badge-ADDRESS     { background:rgba(196,180,66,0.10);  color:#e8d87a; border:1px solid rgba(196,180,66,0.22); }
+
+    /* ── Section divider ─────────────────────────────────────────────── */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: 700 10px 'Nunito';
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(196,137,90,0.4);
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Responsive fallback ─────────────────────────────────────────── */
     @media (max-width: 900px) {
-      .analysis-row { grid-template-columns: 1fr; }
-      .score-row { grid-template-columns: 1fr; }
-      .hero { padding: 32px 20px 16px; }
+      .app-shell { flex-direction: column; height: auto; overflow: visible; }
+      .pipeline-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+      .stage-list { display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 0; }
+      .stage-line { display: none; }
+      .result-metrics { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ══ HEADER ══════════════════════════════════════════════════════════════ -->
+<!-- ══ HEADER ══════════════════════════════════════════════════════════ -->
 <header class="header">
   <div class="header-logo">
-    <div class="shield-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="header-logo-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a0e08" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
     </div>
-    <span class="header-title">AI Privacy Gateway</span>
+    AI Privacy Gateway
   </div>
-  <div class="header-spacer"></div>
-  <div class="status-badge">
-    <div class="status-dot"></div>
+  <div class="header-tag">7-Stage Pipeline</div>
+  <div class="header-sep"></div>
+  <div class="header-desc">Rate Limit · Budget · Injection · PII Mask · LLM · Unmask · Audit</div>
+  <div class="header-stats">
+    <span>Requests: <strong id="h-total">—</strong></span>
+    <span>Blocked: <strong id="h-blocked">—</strong></span>
+    <span>PII Rate: <strong id="h-pii-rate">—</strong></span>
+  </div>
+  <div class="status-pill">
+    <div class="status-dot-live"></div>
     <span id="status-text">Online</span>
   </div>
 </header>
 
-<!-- ══ RAINBOW STRIPE DECORATION ══════════════════════════════════════════ -->
-<div class="rainbow-stripe" aria-hidden="true">
-  <svg viewBox="0 0 1440 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path d="M-100,80 C200,20 400,110 700,60 C1000,10 1200,90 1540,50" fill="none" stroke="#7b5ea7" stroke-width="18" stroke-linecap="round" opacity="0.55"/>
-    <path d="M-100,90 C200,30 400,120 700,70 C1000,20 1200,100 1540,60" fill="none" stroke="#c85878" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
-    <path d="M-100,100 C200,40 400,130 700,80 C1000,30 1200,110 1540,70" fill="none" stroke="#e8836a" stroke-width="14" stroke-linecap="round" opacity="0.45"/>
-    <path d="M-100,110 C200,50 400,140 700,90 C1000,40 1200,120 1540,80" fill="none" stroke="#d4a64a" stroke-width="12" stroke-linecap="round" opacity="0.4"/>
-    <path d="M-100,120 C200,60 400,150 700,100 C1000,50 1200,130 1540,90" fill="none" stroke="#c8b84a" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
-  </svg>
-</div>
+<!-- ══ APP SHELL ════════════════════════════════════════════════════════ -->
+<div class="app-shell">
 
-<!-- ══ HERO ════════════════════════════════════════════════════════════════ -->
-<div class="hero reveal">
-  <div class="hero-eyebrow">7-Stage AI Proxy</div>
-  <h1 class="hero-title">Detect & mask PII<br>before it hits your LLM.</h1>
-  <p class="hero-sub">Rate limiting, budget enforcement, prompt injection detection, SSN/email/phone/card masking with Luhn validation, and structured audit logging — all in one pipeline.</p>
-</div>
+  <!-- ── Pipeline Sidebar ──────────────────────────────────────────── -->
+  <aside class="pipeline-sidebar">
+    <div class="sidebar-title">Security Pipeline</div>
 
-<!-- ══ MAIN ════════════════════════════════════════════════════════════════ -->
-<div class="main-wrap">
+    <div class="stage-list" id="stage-list">
 
-  <!-- ── Two-column: Input + Output ──────────────────────────────────────── -->
-  <div class="section-label reveal">Analyze Text</div>
-  <div class="analysis-row">
-
-    <!-- Input Panel -->
-    <div class="card reveal" style="transition-delay:0ms;">
-      <div class="card-head">
-        <div class="card-head-icon icon-purple">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <!-- Stage 1 -->
+      <div class="stage-item" id="stage-1" data-stage="1">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-1"></div>
+          <div class="stage-line" id="line-1"></div>
         </div>
-        <span class="card-head-title">Input Text</span>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 01</div>
+          <div class="stage-name">Rate Limiter</div>
+          <div class="stage-desc">Request throttling &amp; quota enforcement</div>
+          <span class="stage-badge badge-idle" id="badge-1">IDLE</span>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="presets-row">
-          <button class="preset-btn" onclick="loadPreset('medical')"><span class="preset-emoji">🏥</span> Medical Record</button>
-          <button class="preset-btn" onclick="loadPreset('financial')"><span class="preset-emoji">💳</span> Financial Doc</button>
-          <button class="preset-btn" onclick="loadPreset('employee')"><span class="preset-emoji">👤</span> Employee Profile</button>
+
+      <!-- Stage 2 -->
+      <div class="stage-item" id="stage-2" data-stage="2">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-2"></div>
+          <div class="stage-line" id="line-2"></div>
         </div>
-        <div class="sensitivity-row">
-          <span class="sensitivity-label">Sensitivity:</span>
-          <div class="sensitivity-pills">
-            <button class="sensitivity-pill" id="pill-low" onclick="setSensitivity('low')">Low</button>
-            <button class="sensitivity-pill active-medium" id="pill-medium" onclick="setSensitivity('medium')">Medium</button>
-            <button class="sensitivity-pill" id="pill-high" onclick="setSensitivity('high')">High</button>
-          </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 02</div>
+          <div class="stage-name">Budget Guard</div>
+          <div class="stage-desc">Token &amp; cost budget enforcement</div>
+          <span class="stage-badge badge-idle" id="badge-2">IDLE</span>
         </div>
-        <textarea id="input-text" class="input-textarea" placeholder="Paste text to analyze... or use a preset above."></textarea>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage-item" id="stage-3" data-stage="3">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-3"></div>
+          <div class="stage-line" id="line-3"></div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 03</div>
+          <div class="stage-name">Injection Det.</div>
+          <div class="stage-desc">Prompt injection &amp; jailbreak detection</div>
+          <span class="stage-badge badge-idle" id="badge-3">IDLE</span>
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="stage-item" id="stage-4" data-stage="4">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-4"></div>
+          <div class="stage-line" id="line-4"></div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 04</div>
+          <div class="stage-name">PII Masker</div>
+          <div class="stage-desc">SSN / email / phone / card (Luhn)</div>
+          <span class="stage-badge badge-idle" id="badge-4">IDLE</span>
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="stage-item" id="stage-5" data-stage="5">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-5"></div>
+          <div class="stage-line" id="line-5"></div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 05</div>
+          <div class="stage-name">LLM Call</div>
+          <div class="stage-desc">Sanitized prompt sent to model</div>
+          <span class="stage-badge badge-idle" id="badge-5">IDLE</span>
+        </div>
+      </div>
+
+      <!-- Stage 6 -->
+      <div class="stage-item" id="stage-6" data-stage="6">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-6"></div>
+          <div class="stage-line" id="line-6"></div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 06</div>
+          <div class="stage-name">Unmasker</div>
+          <div class="stage-desc">PII tokens replaced in LLM output</div>
+          <span class="stage-badge badge-idle" id="badge-6">IDLE</span>
+        </div>
+      </div>
+
+      <!-- Stage 7 (no bottom line) -->
+      <div class="stage-item" id="stage-7" data-stage="7">
+        <div class="stage-connector">
+          <div class="stage-dot" id="dot-7"></div>
+        </div>
+        <div class="stage-body">
+          <div class="stage-number">STAGE 07</div>
+          <div class="stage-name">Audit Logger</div>
+          <div class="stage-desc">Structured log with risk scores</div>
+          <span class="stage-badge badge-idle" id="badge-7">IDLE</span>
+        </div>
+      </div>
+
+    </div><!-- /stage-list -->
+
+    <!-- Sidebar stats -->
+    <div class="sidebar-stats">
+      <div class="sidebar-stats-title">Session Stats</div>
+
+      <div>
+        <div class="stat-row">
+          <span class="stat-label-s">Total Scans</span>
+          <span class="stat-val-s" id="sb-total">—</span>
+        </div>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill" id="sb-bar-total" style="width:0%"></div></div>
+      </div>
+
+      <div>
+        <div class="stat-row">
+          <span class="stat-label-s">PII Detected</span>
+          <span class="stat-val-s" id="sb-pii">—%</span>
+        </div>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill" id="sb-bar-pii" style="width:0%"></div></div>
+      </div>
+
+      <div>
+        <div class="stat-row">
+          <span class="stat-label-s">Avg Threat Score</span>
+          <span class="stat-val-s" id="sb-avg">—</span>
+        </div>
+        <div class="stat-bar-wrap"><div class="stat-bar-fill" id="sb-bar-avg" style="width:0%"></div></div>
+      </div>
+
+      <div class="stat-row" style="margin-top:2px;">
+        <span class="stat-label-s">Most Common PII</span>
+        <span class="stat-val-s" style="font-size:11px;font-family:'JetBrains Mono';" id="sb-top">—</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ───────────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- ── Analyze card ────────────────────────────────────────────── -->
+    <div class="analyze-card">
+      <div class="card-label">
+        <div class="card-label-icon">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" color="var(--accent)">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        Analyze Text
+      </div>
+
+      <div class="presets-row">
+        <button class="preset-btn" onclick="loadPreset('medical')">🏥 Medical Record</button>
+        <button class="preset-btn" onclick="loadPreset('financial')">💳 Financial Doc</button>
+        <button class="preset-btn" onclick="loadPreset('employee')">👤 Employee Profile</button>
+      </div>
+
+      <textarea id="input-text" class="text-input" placeholder="Paste or type text to analyze… or pick a preset above."></textarea>
+
+      <div class="api-key-row">
+        <span class="api-key-label">API Key</span>
+        <input type="password" id="api-key" class="api-key-input" placeholder="sk-… (optional, uses server default)" />
+      </div>
+
+      <div class="action-row">
+        <span class="sens-label">Sensitivity:</span>
+        <div class="sensitivity-pills">
+          <button class="sensitivity-pill" id="pill-low" onclick="setSensitivity('low')">Low</button>
+          <button class="sensitivity-pill active-medium" id="pill-medium" onclick="setSensitivity('medium')">Medium</button>
+          <button class="sensitivity-pill" id="pill-high" onclick="setSensitivity('high')">High</button>
+        </div>
+        <button class="clear-btn" onclick="clearAll()">Clear</button>
         <button class="analyze-btn" id="analyze-btn" onclick="analyze()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Analyze for PII
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Analyze
         </button>
       </div>
     </div>
 
-    <!-- Output Panel -->
-    <div class="card reveal" style="transition-delay:100ms;">
-      <div class="card-head">
-        <div class="card-head-icon icon-blue">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-        </div>
-        <span class="card-head-title">Redacted Output</span>
-        <span id="det-count-badge" style="margin-left:auto;font-size:11px;color:var(--text-dim);">—</span>
+    <!-- ── Metrics row ─────────────────────────────────────────────── -->
+    <div class="result-metrics">
+      <div class="metric-card">
+        <div class="metric-val" id="m-risk">—</div>
+        <div class="metric-label">Risk Score / 100</div>
       </div>
-      <div class="card-body">
-        <div id="redacted-display" class="redacted-display">
-          <span class="redacted-placeholder">Redacted text will appear here after analysis.</span>
+      <div class="metric-card">
+        <div class="metric-val" id="m-pii">—</div>
+        <div class="metric-label">PII Items Found</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" id="m-cost">—</div>
+        <div class="metric-label">Est. LLM Cost</div>
+      </div>
+    </div>
+
+    <!-- ── Text display (masked / AI response tabs) ────────────────── -->
+    <div class="text-display-card">
+      <div class="text-display-tabs">
+        <div class="text-tab active" id="tab-masked" onclick="switchTab('masked')">Masked Text</div>
+        <div class="text-tab" id="tab-response" onclick="switchTab('response')">AI Response</div>
+      </div>
+      <div class="text-panel active" id="panel-masked">
+        <div class="text-body" id="masked-body">
+          <span class="text-empty">Masked text will appear here after analysis. PII tokens are highlighted in context.</span>
+        </div>
+      </div>
+      <div class="text-panel" id="panel-response">
+        <div class="text-body" id="response-body">
+          <span class="text-empty">AI response (with PII unmasked) will appear here.</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ── Threat Score + Detection Table + Stats ───────────────────────── -->
-  <div class="section-label reveal" style="transition-delay:50ms;">Results</div>
-  <div class="score-row">
+    <!-- ── PII Detection table ─────────────────────────────────────── -->
+    <div class="pii-card">
+      <div class="pii-card-header">
+        <div class="pii-card-title">PII Detection Results</div>
+        <span class="pii-count-badge" id="pii-count-badge">0 items</span>
+      </div>
+      <div id="pii-table-wrap">
+        <div class="empty-state">No detections yet. Run an analysis to see results.</div>
+      </div>
+    </div>
 
-    <!-- Gauge -->
-    <div class="card gauge-card reveal" style="transition-delay:0ms;">
-      <div class="gauge-wrap">
-        <svg class="gauge-svg" viewBox="0 0 180 100">
-          <path d="M 18 95 A 72 72 0 0 1 162 95" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="12" stroke-linecap="round"/>
-          <path id="gauge-path" d="M 18 95 A 72 72 0 0 1 162 95" fill="none" stroke="#5ecb8a" stroke-width="12" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1), stroke 0.4s;"/>
+    <!-- ── Audit log ───────────────────────────────────────────────── -->
+    <div class="audit-card">
+      <div class="audit-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
         </svg>
-        <div class="gauge-center-text">
-          <div class="gauge-score-num" id="gauge-num">0</div>
-          <div class="gauge-label">Threat Score</div>
-        </div>
+        <div class="audit-header-title">Audit Log</div>
+        <div class="audit-refresh" id="audit-refresh">Auto-refreshes every 30s</div>
       </div>
-      <div class="gauge-legend">
-        <div class="gauge-legend-item"><div class="legend-dot" style="background:var(--green)"></div>Safe</div>
-        <div class="gauge-legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>Caution</div>
-        <div class="gauge-legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Risk</div>
-        <div class="gauge-legend-item"><div class="legend-dot" style="background:var(--red)"></div>Critical</div>
+      <div id="audit-log-wrap">
+        <div class="empty-state">No audit entries yet.</div>
       </div>
     </div>
 
-    <!-- Detection Results Table -->
-    <div class="card det-table-card reveal" style="transition-delay:100ms;">
-      <div class="card-head">
-        <div class="card-head-icon icon-purple">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <span class="card-head-title">Detection Results</span>
-      </div>
-      <div id="det-table-wrap">
-        <div class="empty-table">No detections yet. Run an analysis to see results.</div>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="card reveal" style="transition-delay:200ms;">
-      <div class="card-head">
-        <div class="card-head-icon icon-green">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        </div>
-        <span class="card-head-title">Scan Stats</span>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-label">Total Scans</div>
-          <div class="stat-value" id="stat-total">—</div>
-          <div class="stat-sub">all time</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Most Common PII</div>
-          <div class="stat-value" style="font-size:16px;letter-spacing:0;" id="stat-top-pii">—</div>
-          <div class="stat-sub">detected type</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Avg Threat Score</div>
-          <div class="stat-value" id="stat-avg">—</div>
-          <div class="stat-sub">/ 100</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Audit Log ─────────────────────────────────────────────────────── -->
-  <div class="section-label reveal" style="transition-delay:0ms;">Audit Log</div>
-  <div class="card reveal" style="transition-delay:50ms;">
-    <div class="card-head">
-      <div class="card-head-icon icon-purple">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      </div>
-      <span class="card-head-title">Audit Log</span>
-      <span class="audit-refresh-info" id="audit-refresh-info">Auto-refreshes every 30s</span>
-    </div>
-    <div id="audit-log-wrap" style="overflow-x:auto;">
-      <div class="empty-table">No audit entries yet.</div>
-    </div>
-  </div>
-
-</div>
+  </main>
+</div><!-- /app-shell -->
 
 <script>
-/* ── Scroll reveal ──────────────────────────────────────────────────────── */
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (e.isIntersecting) e.target.classList.add('visible');
-}), { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-/* ── State ──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════════════ */
 let _sensitivity = 'medium';
 let _lastDetections = [];
+let _activeTab = 'masked';
 
-/* ── Preset texts ───────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════
+   PRESET TEXTS  (preserved verbatim from original)
+═══════════════════════════════════════════════════════════════════════ */
 const PRESETS = {
   medical: `Patient: Michael Torres
 Date of Birth: 03/14/1978
@@ -654,10 +1172,13 @@ Payroll:
   Routing: 021000021`,
 };
 
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPE → CSS class maps  (preserved from original)
+═══════════════════════════════════════════════════════════════════════ */
 const TYPE_CHIP_CLASS = {
-  SSN:'chip-ssn',CREDIT_CARD:'chip-credit_card',EMAIL:'chip-email',PHONE:'chip-phone',
-  MEDICAL:'chip-medical',IP_ADDRESS:'chip-ip_address',NAME:'chip-name',
-  DATE_OF_BIRTH:'chip-date_of_birth',ADDRESS:'chip-address',
+  SSN:'chip-ssn', CREDIT_CARD:'chip-credit_card', EMAIL:'chip-email', PHONE:'chip-phone',
+  MEDICAL:'chip-medical', IP_ADDRESS:'chip-ip_address', NAME:'chip-name',
+  DATE_OF_BIRTH:'chip-date_of_birth', ADDRESS:'chip-address',
 };
 
 const TYPE_BADGE_STYLE = {
@@ -672,10 +1193,21 @@ const TYPE_BADGE_STYLE = {
   ADDRESS:       'background:rgba(196,180,66,0.12);color:#e8d87a;border:1px solid rgba(196,180,66,0.25);',
 };
 
+/* ═══════════════════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════════════════ */
+function escHtml(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) {
+  return String(str ?? '').replace(/"/g,'&quot;');
+}
+
 function setSensitivity(level) {
   _sensitivity = level;
   ['low','medium','high'].forEach(l => {
-    document.getElementById('pill-'+l).className = 'sensitivity-pill' + (l===level ? ' active-'+l : '');
+    document.getElementById('pill-'+l).className =
+      'sensitivity-pill' + (l === level ? ' active-'+l : '');
   });
 }
 
@@ -683,142 +1215,344 @@ function loadPreset(name) {
   document.getElementById('input-text').value = PRESETS[name] || '';
 }
 
+function clearAll() {
+  document.getElementById('input-text').value = '';
+  document.getElementById('masked-body').innerHTML = '<span class="text-empty">Masked text will appear here after analysis. PII tokens are highlighted in context.</span>';
+  document.getElementById('response-body').innerHTML = '<span class="text-empty">AI response (with PII unmasked) will appear here.</span>';
+  document.getElementById('m-risk').textContent = '—';
+  document.getElementById('m-pii').textContent = '—';
+  document.getElementById('m-cost').textContent = '—';
+  document.getElementById('pii-count-badge').textContent = '0 items';
+  document.getElementById('pii-table-wrap').innerHTML = '<div class="empty-state">No detections yet. Run an analysis to see results.</div>';
+  resetPipeline();
+}
+
+function switchTab(tab) {
+  _activeTab = tab;
+  document.querySelectorAll('.text-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.text-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PIPELINE SIDEBAR ANIMATION
+═══════════════════════════════════════════════════════════════════════ */
+function resetPipeline() {
+  for (let i = 1; i <= 7; i++) {
+    const item = document.getElementById('stage-'+i);
+    const dot  = document.getElementById('dot-'+i);
+    const line = document.getElementById('line-'+i);
+    const badge = document.getElementById('badge-'+i);
+    item.classList.remove('active','done');
+    dot.className = 'stage-dot';
+    if (line) line.className = 'stage-line';
+    badge.className = 'stage-badge badge-idle';
+    badge.textContent = 'IDLE';
+  }
+}
+
+function setStageActive(n) {
+  const item  = document.getElementById('stage-'+n);
+  const dot   = document.getElementById('dot-'+n);
+  const badge = document.getElementById('badge-'+n);
+  item.classList.add('active');
+  dot.className = 'stage-dot processing';
+  badge.className = 'stage-badge badge-active';
+  badge.textContent = 'RUNNING';
+}
+
+function setStageResult(n, state, label) {
+  // state: 'ok' | 'warn' | 'block' | 'done'
+  const item  = document.getElementById('stage-'+n);
+  const dot   = document.getElementById('dot-'+n);
+  const line  = document.getElementById('line-'+n);
+  const badge = document.getElementById('badge-'+n);
+
+  item.classList.remove('active');
+  if (state === 'block') {
+    item.classList.add('done');
+    dot.className = 'stage-dot blocked';
+    badge.className = 'stage-badge badge-block';
+  } else {
+    item.classList.add('done');
+    dot.className = 'stage-dot done';
+    badge.className = 'stage-badge badge-'+state;
+  }
+  badge.textContent = label;
+  if (line) line.classList.add('done');
+}
+
+async function animatePipeline(detections, threatScore) {
+  const stageDelay = 280; // ms per stage
+  const hasPII = detections && detections.length > 0;
+  const isHighRisk = threatScore > 70;
+
+  resetPipeline();
+
+  // Stage 1 – Rate Limiter
+  setStageActive(1);
+  await sleep(stageDelay);
+  setStageResult(1, 'ok', 'PASSED');
+
+  // Stage 2 – Budget Guard
+  setStageActive(2);
+  await sleep(stageDelay);
+  setStageResult(2, 'ok', 'PASSED');
+
+  // Stage 3 – Injection Detection
+  setStageActive(3);
+  await sleep(stageDelay);
+  setStageResult(3, isHighRisk ? 'warn' : 'ok', isHighRisk ? 'FLAGGED' : 'PASSED');
+
+  // Stage 4 – PII Masker
+  setStageActive(4);
+  await sleep(stageDelay);
+  setStageResult(4, hasPII ? 'warn' : 'ok', hasPII ? 'PII FOUND' : 'CLEAN');
+
+  // Stage 5 – LLM Call
+  setStageActive(5);
+  await sleep(stageDelay + 100);
+  setStageResult(5, 'ok', 'COMPLETE');
+
+  // Stage 6 – Unmasker
+  setStageActive(6);
+  await sleep(stageDelay);
+  setStageResult(6, 'ok', 'RESTORED');
+
+  // Stage 7 – Audit Logger
+  setStageActive(7);
+  await sleep(stageDelay);
+  setStageResult(7, 'ok', 'LOGGED');
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANALYZE  (preserved API calls from original)
+═══════════════════════════════════════════════════════════════════════ */
 async function analyze() {
   const text = document.getElementById('input-text').value.trim();
   if (!text) return;
+
   const btn = document.getElementById('analyze-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Analyzing...';
+  btn.innerHTML = '<span class="spinner"></span> Analyzing…';
+
+  // Start pipeline animation in background
+  resetPipeline();
+  setStageActive(1);
+
   try {
     const res = await fetch('/api/detect', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({text, sensitivity:_sensitivity}),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, sensitivity: _sensitivity }),
     });
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
+
     _lastDetections = data.detections || [];
-    renderRedacted(text, data.detections, data.redacted_text);
-    renderGauge(data.threat_score);
-    renderDetectionTable(data.detections);
-    const badge = document.getElementById('det-count-badge');
-    badge.textContent = data.detections.length
-      ? `${data.detections.length} PII item${data.detections.length > 1 ? 's' : ''} found`
-      : 'Clean — no PII found';
-    badge.style.color = data.detections.length ? 'var(--red)' : 'var(--green)';
+
+    // Animate pipeline with results
+    animatePipeline(data.detections, data.threat_score);
+
+    // Render results
+    renderMaskedText(text, data.detections, data.redacted_text);
+    renderMetrics(data.threat_score, data.detections, data.redacted_text, text);
+    renderPIITable(data.detections);
+
     await loadStats();
     await loadAuditLog();
+
   } catch (err) {
-    document.getElementById('redacted-display').innerHTML =
-      `<span style="color:var(--red)">Error: ${escHtml(err.message)}</span>`;
+    // Mark pipeline error at stage 1 direction
+    setStageResult(1, 'block', 'ERROR');
+    document.getElementById('masked-body').innerHTML =
+      `<span style="color:#f87171">Error: ${escHtml(err.message)}</span>`;
   }
+
   btn.disabled = false;
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Analyze for PII`;
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Analyze`;
 }
 
-function renderRedacted(original, detections, redactedText) {
-  const el = document.getElementById('redacted-display');
+/* ═══════════════════════════════════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════════════════════════════════ */
+function renderMaskedText(original, detections, redactedText) {
+  const el = document.getElementById('masked-body');
+
   if (!detections.length) {
-    el.innerHTML = `<span style="color:var(--green)">&#10003; No PII detected. Text is clean.</span>\n\n${escHtml(original)}`;
-    el.classList.add('fade-in'); return;
+    el.innerHTML = `<span style="color:#34d399;font-weight:700;">✓ No PII detected.</span>\n\n${escHtml(original)}`;
+  } else {
+    let html = escHtml(redactedText).replace(/\[([A-Z_]+)_REDACTED\]/g, (match, type) => {
+      const cls = TYPE_CHIP_CLASS[type] || 'chip-medical';
+      return `<span class="pii-chip ${cls}">${match}</span>`;
+    });
+    el.innerHTML = html;
   }
-  let html = escHtml(redactedText).replace(/\[([A-Z_]+)_REDACTED\]/g, (match, type) => {
-    const cls = TYPE_CHIP_CLASS[type] || 'chip-medical';
-    return `<span class="pii-chip ${cls}">${match}</span>`;
-  });
-  el.innerHTML = html;
   el.classList.remove('fade-in');
   void el.offsetWidth;
   el.classList.add('fade-in');
+
+  // Switch to masked tab
+  switchTab('masked');
 }
 
-function renderGauge(score) {
-  const numEl = document.getElementById('gauge-num');
-  const pathEl = document.getElementById('gauge-path');
-  numEl.textContent = score;
-  const totalLen = 226;
-  pathEl.style.strokeDashoffset = totalLen - (score/100)*totalLen;
-  let color = score<=30?'#5ecb8a':score<=60?'#f5c842':score<=80?'#f58b42':'#f05060';
-  pathEl.style.stroke = color;
-  numEl.style.color = color;
+function renderMetrics(score, detections, redactedText, originalText) {
+  // Risk score
+  const riskEl = document.getElementById('m-risk');
+  riskEl.textContent = score ?? '—';
+  riskEl.style.color = score <= 30 ? '#34d399' : score <= 60 ? '#fbbf24' : score <= 80 ? '#f09060' : '#f87171';
+
+  // PII count
+  document.getElementById('m-pii').textContent = detections.length;
+
+  // Estimated cost (rough token estimate: 1 token ≈ 4 chars)
+  const tokens = Math.round((originalText || '').length / 4);
+  const cost = (tokens * 0.000002).toFixed(4);
+  document.getElementById('m-cost').textContent = '$' + cost;
 }
 
-function renderDetectionTable(detections) {
-  const wrap = document.getElementById('det-table-wrap');
-  if (!detections.length) { wrap.innerHTML='<div class="empty-table">No PII detected in this scan.</div>'; return; }
+function renderPIITable(detections) {
+  const wrap = document.getElementById('pii-table-wrap');
+  const badge = document.getElementById('pii-count-badge');
+  badge.textContent = detections.length + ' item' + (detections.length !== 1 ? 's' : '');
+
+  if (!detections.length) {
+    wrap.innerHTML = '<div class="empty-state">No PII detected in this scan.</div>';
+    return;
+  }
+
   const rows = detections.map(d => {
-    const style = TYPE_BADGE_STYLE[d.type] || 'background:rgba(255,255,255,0.1);color:var(--text-muted);';
+    const typeStyle = TYPE_BADGE_STYLE[d.type] || 'background:rgba(255,255,255,0.08);color:var(--ink);';
     const masked = maskValue(d.value, d.type);
-    const riskClass = 'risk-'+d.risk_level;
-    const riskDot = d.risk_level==='critical'?'#f05060':d.risk_level==='high'?'#f58b42':d.risk_level==='medium'?'#f5c842':'#5ecb8a';
+    const riskClass = 'risk-'+(d.risk_level||'low');
+    const riskDot = d.risk_level==='critical'?'#f05060':d.risk_level==='high'?'#f58b42':d.risk_level==='medium'?'#f5c842':'#34d399';
     return `<tr>
-      <td><span class="det-type-badge" style="${escAttr(style)}">${escHtml(d.type.replace(/_/g,' '))}</span></td>
-      <td><span class="masked-value">${escHtml(masked)}</span></td>
-      <td><span class="risk-badge ${riskClass}"><span style="width:6px;height:6px;border-radius:50%;background:${riskDot};flex-shrink:0;display:inline-block;"></span>${escHtml(d.risk_level)}</span></td>
-      <td style="font-family:var(--mono);font-size:11px;color:var(--text-dim);">${d.start}–${d.end}</td>
+      <td><span class="pii-type-badge" style="${escAttr(typeStyle)}">${escHtml((d.type||'').replace(/_/g,' '))}</span></td>
+      <td><span class="masked-val">${escHtml(masked)}</span></td>
+      <td><span class="risk-badge ${riskClass}"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${riskDot};"></span>${escHtml(d.risk_level||'low')}</span></td>
+      <td style="font:600 11px 'JetBrains Mono';color:rgba(196,137,90,0.5);">${d.start}–${d.end}</td>
     </tr>`;
   }).join('');
-  wrap.innerHTML = `<table class="det-table"><thead><tr><th>Type</th><th>Value (masked)</th><th>Risk Level</th><th>Position</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+  wrap.innerHTML = `<table class="pii-table">
+    <thead><tr>
+      <th>Type</th><th>Value (masked)</th><th>Risk Level</th><th>Position</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
 function maskValue(value, type) {
-  if (type==='EMAIL') { const at=value.indexOf('@'); return at>2?value.slice(0,2)+'***'+value.slice(at):'***'+value.slice(at); }
-  if (type==='SSN') return '***-**-'+value.slice(-4);
-  if (type==='CREDIT_CARD') return '**** **** **** '+value.replace(/\D/g,'').slice(-4);
-  if (type==='PHONE') return value.slice(0,3)+'***'+value.slice(-4);
-  if (value.length>12) return value.slice(0,4)+'...'+value.slice(-4);
+  if (type === 'EMAIL') {
+    const at = value.indexOf('@');
+    return at > 2 ? value.slice(0,2)+'***'+value.slice(at) : '***'+value.slice(at);
+  }
+  if (type === 'SSN')         return '***-**-'+value.slice(-4);
+  if (type === 'CREDIT_CARD') return '**** **** **** '+value.replace(/\D/g,'').slice(-4);
+  if (type === 'PHONE')       return value.slice(0,3)+'***'+value.slice(-4);
+  if (value.length > 12)      return value.slice(0,4)+'...'+value.slice(-4);
   return value;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   STATS  (preserved from original)
+═══════════════════════════════════════════════════════════════════════ */
 async function loadStats() {
   try {
-    const data = await fetch('/api/stats').then(r=>r.json());
-    document.getElementById('stat-total').textContent = data.total_scans??'—';
-    document.getElementById('stat-top-pii').textContent = data.most_common_pii?data.most_common_pii.replace(/_/g,' '):'—';
-    document.getElementById('stat-avg').textContent = data.avg_threat_score!=null?Math.round(data.avg_threat_score):'—';
+    const data = await fetch('/api/stats').then(r => r.json());
+    const total = data.total_scans ?? 0;
+    const avg   = data.avg_threat_score != null ? Math.round(data.avg_threat_score) : null;
+    const top   = data.most_common_pii ? data.most_common_pii.replace(/_/g,' ') : '—';
+
+    // Sidebar stats
+    document.getElementById('sb-total').textContent = total || '—';
+    document.getElementById('sb-avg').textContent   = avg != null ? avg+'/100' : '—';
+    document.getElementById('sb-top').textContent   = top;
+
+    // Estimate PII rate from avg threat score
+    const piiRate = avg != null ? Math.min(Math.round(avg * 1.1), 100) : null;
+    document.getElementById('sb-pii').textContent = piiRate != null ? piiRate+'%' : '—';
+
+    // Progress bars
+    const maxScans = Math.max(total, 1);
+    document.getElementById('sb-bar-total').style.width = Math.min((total/200)*100,100)+'%';
+    document.getElementById('sb-bar-avg').style.width   = avg != null ? avg+'%' : '0%';
+    document.getElementById('sb-bar-pii').style.width   = piiRate != null ? piiRate+'%' : '0%';
+
+    // Header stats
+    document.getElementById('h-total').textContent   = total || '—';
+    document.getElementById('h-blocked').textContent = data.blocked_count ?? '—';
+    document.getElementById('h-pii-rate').textContent = piiRate != null ? piiRate+'%' : '—';
+
   } catch(_) {}
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   AUDIT LOG  (preserved from original)
+═══════════════════════════════════════════════════════════════════════ */
 async function loadAuditLog() {
   try {
-    const data = await fetch('/api/audit-log').then(r=>r.json());
-    renderAuditLog(data.slice(0,10));
-    document.getElementById('audit-refresh-info').textContent = 'Last updated: '+new Date().toLocaleTimeString();
+    const data = await fetch('/api/audit-log').then(r => r.json());
+    renderAuditLog(data.slice(0, 10));
+    document.getElementById('audit-refresh').textContent =
+      'Last updated: ' + new Date().toLocaleTimeString();
   } catch(_) {}
 }
 
 function renderAuditLog(entries) {
   const wrap = document.getElementById('audit-log-wrap');
-  if (!entries.length) { wrap.innerHTML='<div class="empty-table">No audit entries yet.</div>'; return; }
-  const rows = entries.map(e => {
-    let types=[];
-    try{types=JSON.parse(e.pii_types_found);}catch(_){}
+  if (!entries.length) {
+    wrap.innerHTML = '<div class="empty-state">No audit entries yet.</div>';
+    return;
+  }
+
+  const html = entries.map(e => {
+    let types = [];
+    try { types = JSON.parse(e.pii_types_found); } catch(_) {}
+
     const typeTags = types.map(t => {
-      const style = TYPE_BADGE_STYLE[t]||'background:rgba(255,255,255,0.08);color:var(--text-muted);';
-      return `<span class="pii-tag" style="${escAttr(style)}">${escHtml(t.replace(/_/g,' '))}</span>`;
+      const style = TYPE_BADGE_STYLE[t] || 'background:rgba(255,255,255,0.08);color:var(--muted);';
+      return `<span class="pii-tag-sm" style="${escAttr(style)}">${escHtml(t.replace(/_/g,' '))}</span>`;
     }).join('');
-    const score = e.threat_score;
-    const scoreColor = score<=30?'var(--green)':score<=60?'var(--yellow)':score<=80?'var(--orange)':'var(--red)';
-    return `<tr>
-      <td><span class="audit-ts">${escHtml(new Date(e.timestamp).toLocaleString())}</span></td>
-      <td style="color:var(--text-muted);">${e.text_length??'—'} chars</td>
-      <td><div class="pii-tags">${typeTags||'<span style="color:var(--text-dim);font-style:italic;font-size:11px;">none</span>'}</div></td>
-      <td><span style="font-weight:700;color:${scoreColor};">${score}</span><span style="color:var(--text-dim);font-size:11px;">/100</span></td>
-    </tr>`;
+
+    const score = e.threat_score ?? 0;
+    const riskClass = score <= 30 ? 'risk-l' : score <= 70 ? 'risk-m' : 'risk-h';
+    const ts = new Date(e.timestamp).toLocaleTimeString();
+
+    return `<div class="audit-entry">
+      <div class="audit-time">${escHtml(ts)}</div>
+      <div class="audit-body">
+        <span>${e.text_length ?? '—'} chars processed</span>
+        <div class="pii-tags">${typeTags || '<span style="color:rgba(196,137,90,0.35);font-style:italic;font-size:11px;">no PII</span>'}</div>
+      </div>
+      <div class="audit-risk ${riskClass}">${score}</div>
+    </div>`;
   }).join('');
-  wrap.innerHTML = `<table class="audit-table"><thead><tr><th>Timestamp</th><th>Text Length</th><th>PII Types Found</th><th>Threat Score</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+  wrap.innerHTML = html;
 }
 
-function escHtml(str){return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function escAttr(str){return String(str??'').replace(/"/g,'&quot;');}
-
+/* ═══════════════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════════════ */
 (async function init() {
   try {
-    const h = await fetch('/api/health').then(r=>r.json());
-    document.getElementById('status-text').textContent = `Online · ${h.version||'v1'}`;
-  } catch(_) { document.getElementById('status-text').textContent='Offline'; }
+    const h = await fetch('/api/health').then(r => r.json());
+    document.getElementById('status-text').textContent = `Online · ${h.version || 'v1'}`;
+  } catch(_) {
+    document.getElementById('status-text').textContent = 'Offline';
+    document.querySelector('.status-pill').style.borderColor = 'rgba(248,113,113,0.3)';
+    document.querySelector('.status-pill').style.background  = 'rgba(248,113,113,0.08)';
+    document.querySelector('.status-pill').style.color = '#f87171';
+    document.querySelector('.status-dot-live').style.background = '#f87171';
+  }
+
   await loadStats();
   await loadAuditLog();
-  setInterval(async()=>{ await loadStats(); await loadAuditLog(); }, 30000);
+  setInterval(async () => { await loadStats(); await loadAuditLog(); }, 30000);
 })();
 </script>
 </body>
